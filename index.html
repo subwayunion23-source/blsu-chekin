@@ -5,946 +5,597 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>부산지하철노동조합 - 집회 참석 체크인</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
 :root {
-  --red: #CC0000;
-  --red2: #E00000;
-  --red-dim: rgba(204,0,0,0.12);
-  --black: #0D0D0D;
-  --surface: #161616;
-  --surface2: #1F1F1F;
-  --surface3: #282828;
-  --border: rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.14);
-  --white: #F5F5F5;
-  --muted: rgba(255,255,255,0.45);
-  --green: #2E7D32;
-  --green2: #43A047;
-  --green-bg: rgba(46,125,50,0.12);
-  --yellow: #F59E0B;
-  --yellow-bg: rgba(245,158,11,0.1);
-  --blue: #1565C0;
-  --blue-bg: rgba(21,101,192,0.12);
+  --red:#CC0000; --red2:#E00000; --reddim:rgba(204,0,0,0.12);
+  --bg:#0D0D0D; --s1:#161616; --s2:#1F1F1F; --s3:#282828;
+  --b1:rgba(255,255,255,0.08); --b2:rgba(255,255,255,0.14);
+  --w:#F5F5F5; --muted:rgba(255,255,255,0.45);
+  --green:#2E7D32; --gbg:rgba(46,125,50,0.12);
+  --yellow:#F59E0B; --ybg:rgba(245,158,11,0.1);
 }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: var(--black); color: var(--white); overflow-x: hidden; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--w);overflow-x:hidden}
 
 /* HEADER */
-.header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  background: rgba(13,13,13,0.94); backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 13px 18px; display: flex; align-items: center; justify-content: space-between;
-}
-.header-logo { display: flex; align-items: center; gap: 10px; }
-.header-fist { width: 34px; height: 34px; background: var(--red); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
-.header-title { font-size: 15px; font-weight: 900; letter-spacing: -0.3px; }
-.header-sub { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
-.conn-pill {
-  display: flex; align-items: center; gap: 5px;
-  background: var(--surface2); border: 1px solid var(--border2);
-  border-radius: 20px; padding: 4px 10px;
-  font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
-}
-.cdot { width: 7px; height: 7px; border-radius: 50%; background: #444; }
-.cdot.ok { background: #4CAF50; box-shadow: 0 0 5px #4CAF50; }
-.cdot.err { background: var(--red2); }
-.cdot.ing { background: var(--yellow); animation: blink 1s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.hdr{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(13,13,13,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.hdr-logo{display:flex;align-items:center;gap:10px}
+.hdr-logo img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.2)}
+.hdr-title{font-size:15px;font-weight:900;letter-spacing:-0.3px}
+.hdr-sub{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.cpill{display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--b2);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.cdot{width:7px;height:7px;border-radius:50%;background:#444}
+.cdot.ok{background:#4CAF50;box-shadow:0 0 5px #4CAF50}
+.cdot.err{background:var(--red2)}
+.cdot.ing{background:var(--yellow);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 
 /* BOTTOM NAV */
-.bnav {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
-  background: rgba(13,13,13,0.96); backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border); display: flex;
-}
-.nbtn {
-  flex: 1; padding: 11px 4px 15px; background: none; border: none; cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  color: var(--muted); font-family: 'Noto Sans KR', sans-serif;
-  font-size: 10px; font-weight: 500; transition: color 0.2s; position: relative;
-}
-.nbtn .ni { font-size: 21px; line-height: 1; }
-.nbtn.active { color: var(--red2); }
-.nbtn.active::before { content:''; position:absolute; top:0; left:20%; right:20%; height:2px; background:var(--red2); border-radius:0 0 2px 2px; }
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(13,13,13,0.96);backdrop-filter:blur(16px);border-top:1px solid var(--b1);display:flex}
+.nb{flex:1;padding:11px 4px 15px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:500;transition:color 0.2s;position:relative}
+.nb .ni{font-size:21px;line-height:1}
+.nb.on{color:var(--red2)}
+.nb.on::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--red2);border-radius:0 0 2px 2px}
 
 /* MAIN */
-.main { padding: 74px 0 78px; min-height: 100vh; }
-.screen { display: none; animation: fadeUp 0.22s ease; }
-.screen.active { display: block; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+.main{padding:72px 0 76px;min-height:100vh}
+.sc{display:none}
+.sc.on{display:block;animation:fu 0.2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* SECTION */
-.shead { padding: 18px 16px 10px; }
-.stitle { font-size: 23px; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 3px; }
-.sdesc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-
-/* CARD */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin: 0 16px 12px; }
-.clabel { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--red2); margin-bottom: 14px; }
+/* LAYOUT */
+.pg{padding:0 16px}
+.sh{padding:18px 16px 10px}
+.st{font-size:22px;font-weight:900;letter-spacing:-0.8px;margin-bottom:3px}
+.sd{font-size:13px;color:var(--muted);line-height:1.5}
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:20px;margin:0 16px 12px}
+.clbl{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--red2);margin-bottom:14px}
+.divider{height:1px;background:var(--b1);margin:14px 0}
 
 /* FORM */
-.field { margin-bottom: 13px; }
-.field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
-.field input, .field select {
-  width: 100%; background: var(--surface3); border: 1px solid var(--border2); border-radius: 10px;
-  padding: 12px 14px; color: var(--white); font-family: 'Noto Sans KR', sans-serif;
-  font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
-}
-.field input:focus, .field select:focus { border-color: var(--red2); box-shadow: 0 0 0 3px rgba(229,57,53,0.15); }
-.field select option { background: var(--surface3); }
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.fld input,.fld select{width:100%;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:12px 14px;color:var(--w);font-family:'Noto Sans KR',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
+.fld input:focus,.fld select:focus{border-color:var(--red2);box-shadow:0 0 0 3px rgba(204,0,0,0.15)}
+.fld select option{background:var(--s3)}
 
-/* BTN */
-.btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
-.btn-red { background: var(--red); color: white; }
-.btn-red:active { transform: scale(0.98); opacity: 0.9; }
-.btn-ghost { background: var(--surface3); color: var(--white); border: 1px solid var(--border2); margin-top: 10px; }
-.btn-sm { width: auto; padding: 9px 16px; font-size: 13px; border-radius: 9px; }
-.btn-green { background: var(--green); color: white; }
-.btn-green:active { transform: scale(0.98); }
+/* BUTTONS */
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.15s}
+.btn-red{background:var(--red);color:white}
+.btn-red:active{transform:scale(0.98);opacity:0.9}
+.btn-ghost{background:var(--s3);color:var(--w);border:1px solid var(--b2);margin-top:10px}
+.btn-sm{width:auto;padding:9px 16px;font-size:13px;border-radius:9px}
 
 /* PROFILE */
-.profile-card {
-  margin: 0 16px 12px;
-  background: linear-gradient(135deg, #1a0808, #200e0e);
-  border: 1px solid rgba(198,40,40,0.25); border-radius: 16px; padding: 22px;
-  position: relative; overflow: hidden;
-}
-.profile-card::after { content:'✊'; position:absolute; right:16px; top:50%; transform:translateY(-50%); font-size:60px; opacity:0.05; }
-.p-name { font-size: 28px; font-weight: 900; letter-spacing: -1px; margin-bottom: 5px; }
-.p-meta { font-size: 13px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-bottom: 2px; }
-.p-badge { display: inline-block; background: var(--red); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 9px; }
+.pbadge{margin:0 16px 12px;background:linear-gradient(135deg,#1a0808,#200e0e);border:1px solid rgba(204,0,0,0.25);border-radius:16px;padding:22px;position:relative;overflow:hidden}
+.pbadge::after{content:'✊';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:60px;opacity:0.05}
+.pname{font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:5px}
+.pmeta{font-size:13px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-bottom:2px}
+.ptag{display:inline-block;background:var(--red);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:9px}
 
 /* CONSENT */
-.consent-box { background: var(--yellow-bg); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; padding: 16px; margin-bottom: 16px; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.7; }
-.consent-box strong { color: var(--yellow); }
-.chk { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.5; }
-.chk:last-child { border-bottom: none; }
-.chk input { width: 18px; height: 18px; min-width: 18px; accent-color: var(--red2); margin-top: 1px; }
+.cbox{background:var(--ybg);border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.7}
+.cbox strong{color:var(--yellow)}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--b1);cursor:pointer;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5}
+.chk:last-child{border-bottom:none}
+.chk input{width:18px;height:18px;min-width:18px;accent-color:var(--red2);margin-top:1px}
 
 /* TOAST */
-.toast { border-radius: 12px; padding: 13px 16px; font-size: 14px; font-weight: 700; margin: 10px 0 0; display: none; text-align: center; line-height: 1.5; }
-.toast.ok  { background: var(--green-bg);  color: #81C784; border: 1px solid rgba(46,125,50,0.3); }
-.toast.err { background: rgba(198,40,40,0.1); color: #EF9A9A; border: 1px solid rgba(198,40,40,0.3); }
-.toast.info { background: var(--yellow-bg); color: #FCD34D; border: 1px solid rgba(245,158,11,0.3); }
-.toast.loading { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); animation: blink 1.2s infinite; }
+.toast{border-radius:12px;padding:13px 16px;font-size:14px;font-weight:700;margin:10px 0 0;display:none;text-align:center;line-height:1.5}
+.toast.ok{background:var(--gbg);color:#81C784;border:1px solid rgba(46,125,50,0.3)}
+.toast.err{background:rgba(204,0,0,0.1);color:#EF9A9A;border:1px solid rgba(204,0,0,0.3)}
+.toast.info{background:var(--ybg);color:#FCD34D;border:1px solid rgba(245,158,11,0.3)}
+.toast.loading{background:var(--s2);color:var(--muted);border:1px solid var(--b1);animation:blink 1.2s infinite}
 
-/* ── 체크인 히어로 버튼 ── */
-.checkin-hero {
-  margin: 0 16px 14px;
-  border: none; border-radius: 22px; width: calc(100% - 32px);
-  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
-  padding: 36px 24px; text-align: center;
-}
-.checkin-hero.ready {
-  background: linear-gradient(145deg, #1B5E20, #2E7D32);
-  box-shadow: 0 14px 40px rgba(46,125,50,0.4);
-}
-.checkin-hero.loading {
-  background: linear-gradient(145deg, #1a1a1a, #252525);
-  box-shadow: none; cursor: default;
-}
-.checkin-hero.out-of-range {
-  background: linear-gradient(145deg, #4a1010, #6a1515);
-  box-shadow: 0 8px 24px rgba(198,40,40,0.3);
-}
-.checkin-hero.done {
-  background: linear-gradient(145deg, #0D47A1, #1565C0);
-  box-shadow: 0 8px 24px rgba(21,101,192,0.35);
-  cursor: default;
-}
-.checkin-hero::before {
-  content:''; position:absolute; inset:0;
-  background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.07), transparent 60%);
-}
-.checkin-hero:active:not(.loading):not(.done) { transform: scale(0.97); }
-.ch-icon { font-size: 56px; margin-bottom: 10px; display: block; }
-.ch-title { font-size: 22px; font-weight: 900; color: white; letter-spacing: -0.5px; margin-bottom: 6px; }
-.ch-sub { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+/* CHECKIN HERO */
+.chero{margin:0 16px 14px;border:none;border-radius:22px;width:calc(100% - 32px);cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;padding:34px 24px;text-align:center}
+.chero.ready{background:linear-gradient(145deg,#1B5E20,#2E7D32);box-shadow:0 14px 40px rgba(46,125,50,0.4)}
+.chero.loading{background:linear-gradient(145deg,#1a1a1a,#252525);cursor:default}
+.chero.far{background:linear-gradient(145deg,#4a1010,#6a1515);box-shadow:0 8px 24px rgba(204,0,0,0.3)}
+.chero.done{background:linear-gradient(145deg,#0D47A1,#1565C0);cursor:default}
+.chero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(255,255,255,0.07),transparent 60%)}
+.chero:active:not(.loading):not(.done){transform:scale(0.97)}
+.chi{font-size:54px;display:block;margin-bottom:10px}
+.cht{font-size:22px;font-weight:900;color:white;letter-spacing:-0.5px;margin-bottom:6px}
+.chs{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5}
 
-/* GPS 상태 바 */
-.gps-bar {
-  margin: 0 16px 12px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 16px;
-  display: flex; align-items: center; gap: 12px;
-}
-.gps-icon { font-size: 24px; }
-.gps-info { flex: 1; }
-.gps-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
-.gps-value { font-size: 14px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
-.gps-value.near { color: #81C784; }
-.gps-value.far { color: #EF9A9A; }
-.gps-value.unknown { color: var(--muted); }
+/* GPS BAR */
+.gbar{margin:0 16px 12px;background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.gval{font-size:14px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.gval.near{color:#81C784}
+.gval.far{color:#EF9A9A}
+.gval.unk{color:var(--muted)}
 
-/* 거리 게이지 */
-.dist-gauge { margin: 0 16px 12px; }
-.gauge-wrap { background: var(--surface3); border-radius: 20px; height: 8px; overflow: hidden; margin-top: 6px; }
-.gauge-fill { height: 100%; border-radius: 20px; transition: width 0.5s ease, background 0.3s; }
-.gauge-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-top: 4px; }
+/* GAUGE */
+.gauge-wrap{background:var(--s3);border-radius:20px;height:8px;overflow:hidden;margin:6px 0 4px}
+.gauge-fill{height:100%;border-radius:20px;transition:width 0.5s ease,background 0.3s}
+.gauge-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
 
-/* 집회 정보 배너 */
-.rally-banner {
-  margin: 0 16px 12px;
-  background: linear-gradient(135deg, #0a1628, #0d1f3c);
-  border: 1px solid rgba(21,101,192,0.3); border-radius: 14px; padding: 16px 18px;
-}
-.rb-label { font-size: 11px; color: rgba(100,160,255,0.7); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-.rb-name { font-size: 17px; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.3px; }
-.rb-loc { font-size: 13px; color: var(--muted); }
-.rb-radius { display: inline-block; background: rgba(21,101,192,0.2); border: 1px solid rgba(21,101,192,0.4); color: #90CAF9; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 6px; }
+/* RALLY BANNER */
+.rbanner{margin:0 16px 12px;background:linear-gradient(135deg,#0a1628,#0d1f3c);border:1px solid rgba(21,101,192,0.3);border-radius:14px;padding:16px 18px}
+.rblbl{font-size:11px;color:rgba(100,160,255,0.7);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.rbname{font-size:17px;font-weight:900;margin-bottom:4px;letter-spacing:-0.3px}
+.rbloc{font-size:13px;color:var(--muted)}
+.rbtag{display:inline-block;background:rgba(21,101,192,0.2);border:1px solid rgba(21,101,192,0.4);color:#90CAF9;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:6px}
 
-/* 참석 기록 */
-.a-list { list-style: none; }
-.a-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-.a-item:last-child { border-bottom: none; }
-.a-name { font-weight: 700; font-size: 15px; margin-bottom: 3px; }
-.a-meta { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
-.a-badge { display: inline-block; background: var(--red-dim); border: 1px solid rgba(198,40,40,0.3); color: var(--red2); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 3px; }
-.a-time { font-size: 12px; color: var(--red2); font-family: 'IBM Plex Mono', monospace; text-align: right; white-space: nowrap; margin-left: 8px; }
+/* HISTORY */
+.alist{list-style:none}
+.aitem{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--b1)}
+.aitem:last-child{border-bottom:none}
+.aname{font-weight:700;font-size:15px;margin-bottom:3px}
+.ameta{font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.abadge{display:inline-block;background:var(--reddim);border:1px solid rgba(204,0,0,0.3);color:var(--red2);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:3px}
+.atime{font-size:12px;color:var(--red2);font-family:'IBM Plex Mono',monospace;text-align:right;white-space:nowrap;margin-left:8px}
 
-.empty { text-align: center; padding: 36px 0; color: var(--muted); }
-.empty .ei { font-size: 38px; margin-bottom: 10px; }
-.empty p { font-size: 13px; }
+.empty{text-align:center;padding:36px 0;color:var(--muted)}
+.empty .ei{font-size:38px;margin-bottom:10px}
 
-/* 성공 오버레이 */
-.success-overlay {
-  display: none; position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
-  flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 32px;
-}
-.success-overlay.show { display: flex; animation: fadeUp 0.3s ease; }
-.s-circle {
-  width: 110px; height: 110px; border-radius: 50%; background: var(--green);
-  display: flex; align-items: center; justify-content: center; font-size: 58px;
-  margin-bottom: 24px; animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-}
-@keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
-.s-name { font-size: 28px; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 6px; }
-.s-branch { color: var(--muted); font-size: 14px; margin-bottom: 14px; }
-.s-event { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.s-time { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+/* SUCCESS OVERLAY */
+.sov{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.9);backdrop-filter:blur(10px);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
+.sov.on{display:flex;animation:fu 0.3s ease}
+.sov img{width:64px;height:64px;border-radius:50%;object-fit:cover;margin-bottom:16px;border:3px solid rgba(255,255,255,0.3)}
+.scirc{width:110px;height:110px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:56px;margin-bottom:24px;animation:pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.sname{font-size:28px;font-weight:900;letter-spacing:-0.8px;margin-bottom:6px}
+.sbranch{color:var(--muted);font-size:14px;margin-bottom:14px}
+.sevent{font-size:18px;font-weight:700;margin-bottom:6px}
+.stime{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted);margin-bottom:32px}
 
-/* 관리자 - 집회 설정 */
-.rally-setup { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin: 0 16px 12px; }
-.rs-active {
-  background: linear-gradient(135deg, #0a1628, #0d1f3c);
-  border-color: rgba(21,101,192,0.4);
-}
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 16px 12px; }
-.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 15px 10px; text-align: center; }
-.stat-num { font-size: 30px; font-weight: 900; font-family: 'IBM Plex Mono', monospace; color: var(--red2); }
-.stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+/* ADMIN */
+.lock{text-align:center;padding:40px 24px 24px}
+.lockico{font-size:60px;margin-bottom:16px}
+.lock p{color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.6}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:0 16px 12px}
+.sbox{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:15px 10px;text-align:center}
+.snum{font-size:30px;font-weight:900;font-family:'IBM Plex Mono',monospace;color:var(--red2)}
+.slbl{font-size:11px;color:var(--muted);margin-top:3px}
 
-.search-wrap { position: relative; margin-bottom: 12px; }
-.search-wrap input { width: 100%; background: var(--surface3); border: 1px solid var(--border2); border-radius: 10px; padding: 11px 14px 11px 36px; color: var(--white); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; outline: none; }
-.search-wrap input:focus { border-color: var(--red2); }
-.search-wrap::before { content:'🔍'; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:13px; }
+/* LOC METHOD BTNS */
+.loc-tabs{display:flex;gap:8px;margin-bottom:12px}
+.ltab{flex:1;padding:10px 6px;border-radius:10px;border:2px solid var(--b2);background:var(--s3);color:var(--muted);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.ltab.on{border-color:var(--red);background:var(--red);color:white}
 
-/* 설정 */
-.setup-step { display: flex; gap: 13px; margin-bottom: 20px; }
-.step-num { width: 28px; height: 28px; min-width: 28px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; margin-top: 1px; }
-.step-body strong { font-size: 14px; display: block; margin-bottom: 4px; }
-.step-body p { font-size: 12px; color: var(--muted); line-height: 1.7; }
-.step-body code { background: var(--surface3); padding: 1px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--yellow); word-break: break-all; }
-.copy-btn { width: 100%; background: var(--surface3); border: 1px dashed var(--border2); border-radius: 10px; padding: 12px 14px; margin-top: 8px; color: var(--yellow); font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-align: left; cursor: pointer; line-height: 1.6; }
-.url-row { display: flex; gap: 8px; margin-top: 8px; }
-.url-row input { flex: 1; background: var(--surface3); border: 1px solid var(--border2); border-radius: 10px; padding: 11px 12px; color: white; font-family: 'IBM Plex Mono', monospace; font-size: 12px; outline: none; }
-.url-row input:focus { border-color: var(--red2); }
+/* SEARCH */
+.sbar-wrap{position:relative;margin-bottom:12px}
+.sbar-wrap input{width:100%;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 14px 11px 36px;color:var(--w);font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none}
+.sbar-wrap input:focus{border-color:var(--red2)}
+.sbar-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px}
 
-.lock-wrap { text-align: center; padding: 40px 24px 24px; }
-.lock-icon { font-size: 60px; margin-bottom: 16px; }
-.lock-wrap p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+/* SETUP STEPS */
+.sstep{display:flex;gap:13px;margin-bottom:20px}
+.snum2{width:28px;height:28px;min-width:28px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;margin-top:1px}
+.sbody strong{font-size:14px;display:block;margin-bottom:4px}
+.sbody p{font-size:12px;color:var(--muted);line-height:1.7}
+.sbody code{background:var(--s3);padding:1px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--yellow);word-break:break-all}
+.copybtn{width:100%;background:var(--s3);border:1px dashed var(--b2);border-radius:10px;padding:12px 14px;margin-top:8px;color:var(--yellow);font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:left;cursor:pointer;line-height:1.6}
+.urlrow{display:flex;gap:8px;margin-top:8px}
+.urlrow input{flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none}
+.urlrow input:focus{border-color:var(--red2)}
 
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
-.privacy-note { text-align: center; font-size: 11px; color: rgba(255,255,255,0.2); padding: 16px; line-height: 1.8; }
-
-.pill-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-.pill { display: inline-flex; align-items: center; gap: 6px; background: var(--surface3); border: 1px solid var(--border2); border-radius: 20px; padding: 6px 12px; font-size: 13px; }
-.pill button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 0 0 2px; }
+.pill-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--s3);border:1px solid var(--b2);border-radius:20px;padding:6px 12px;font-size:13px}
+.pill button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 0 0 2px}
+.pnote{text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:16px;line-height:1.8}
 </style>
 </head>
 <body>
 
-<!-- 성공 오버레이 -->
-<div class="success-overlay" id="success-overlay">
-  <img src="data:image/jpeg;base64,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" style="width:64px; height:64px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:3px solid rgba(255,255,255,0.3)">
-  <div class="s-circle">✅</div>
-  <div class="s-name" id="so-name">—</div>
-  <div class="s-branch" id="so-branch">—</div>
-  <div class="s-event" id="so-event">—</div>
-  <div class="s-time" id="so-time">—</div>
-  <button class="btn btn-ghost" style="max-width:260px" onclick="closeSuccess()">확인</button>
+<!-- SUCCESS OVERLAY -->
+<div class="sov" id="sov">
+  <img id="sov-logo" src="" alt="">
+  <div class="scirc">✅</div>
+  <div class="sname" id="sov-name"></div>
+  <div class="sbranch" id="sov-branch"></div>
+  <div class="sevent" id="sov-event"></div>
+  <div class="stime" id="sov-time"></div>
+  <button class="btn btn-ghost" style="max-width:260px" onclick="closeSov()">확인</button>
 </div>
 
-<!-- 헤더 -->
-<header class="header">
-  <div class="header-logo">
-    <img src="data:image/jpeg;base64,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" style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.3)">
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-logo">
+    <img id="hdr-logo" src="" alt="부산지하철노동조합">
     <div>
-      <div class="header-title">부산지하철노동조합</div>
-      <div class="header-sub">집회 참석 체크인</div>
+      <div class="hdr-title">부산지하철노동조합</div>
+      <div class="hdr-sub">집회 참석 체크인</div>
     </div>
   </div>
-  <div class="conn-pill">
-    <div class="cdot" id="cdot"></div>
-    <span id="ctxt">확인 중</span>
-  </div>
+  <div class="cpill"><div class="cdot" id="cdot"></div><span id="ctxt">확인중</span></div>
 </header>
 
 <main class="main">
 
-  <!-- ══ 1. 내 정보 ══ -->
-  <div class="screen active" id="screen-member">
+<!-- ══ 내 정보 ══ -->
+<div class="sc on" id="sc-member">
 
-    <div id="sec-consent">
-      <div class="shead">
-        <div class="stitle">조합원 등록</div>
-        <div class="sdesc">집회 체크인을 위한 정보를 등록합니다.<br>최초 1회만 입력하면 됩니다.</div>
+  <!-- 동의 -->
+  <div id="sec-consent">
+    <div class="sh"><div class="st">조합원 등록</div><div class="sd">집회 체크인을 위한 정보를 등록합니다. 최초 1회만 입력하면 됩니다.</div></div>
+    <div class="pg">
+      <div class="cbox">
+        <strong>⚠️ 개인정보 수집·이용 동의</strong><br><br>
+        수집 항목: 이름, 사번, 소속부서, 지부, 지회, 위치정보(GPS)<br>
+        수집 목적: 집회 현장 반경 내 참석 자동 확인<br>
+        보관 기간: 해당 집회 종료 후 1년<br>
+        저장 위치: 노동조합 전용 Google Sheets<br>
+        <strong>위치정보는 체크인 순간만 사용되며 사측에 제공하지 않습니다.</strong>
       </div>
-      <div style="padding:0 16px">
-        <div class="consent-box">
-          <strong>⚠️ 개인정보 수집·이용 동의</strong><br><br>
-          수집 항목: 이름, 사번, 소속부서, 지회명, 위치정보(GPS)<br>
-          수집 목적: 집회 현장 반경 내 참석 자동 확인<br>
-          보관 기간: 해당 집회 종료 후 1년<br>
-          저장 위치: 노동조합 전용 Google Sheets<br>
-          <strong>위치정보는 체크인 순간만 사용되며 사측에 제공하지 않습니다.</strong>
-        </div>
-        <div style="margin-bottom:16px">
-          <label class="chk"><input type="checkbox" id="c1"><span>개인정보 수집 및 이용에 동의합니다 (필수)</span></label>
-          <label class="chk"><input type="checkbox" id="c2"><span>위치정보 수집 및 이용에 동의합니다 (필수) — 위치정보법 제18조</span></label>
-          <label class="chk"><input type="checkbox" id="c3"><span>수집 정보가 노조 내부에서만 사용됨을 확인하였습니다 (필수)</span></label>
-        </div>
-        <button class="btn btn-red" onclick="agreeConsent()">동의하고 정보 등록하기</button>
-        <div class="toast err" id="consent-msg">모든 항목에 동의해 주세요.</div>
+      <div style="margin-bottom:16px">
+        <label class="chk"><input type="checkbox" id="c1"><span>개인정보 수집 및 이용에 동의합니다 (필수)</span></label>
+        <label class="chk"><input type="checkbox" id="c2"><span>위치정보 수집 및 이용에 동의합니다 (필수) — 위치정보법 제18조</span></label>
+        <label class="chk"><input type="checkbox" id="c3"><span>수집 정보가 노조 내부에서만 사용됨을 확인하였습니다 (필수)</span></label>
       </div>
-    </div>
-
-    <div id="sec-form" style="display:none">
-      <div class="shead">
-        <div class="stitle">정보 입력</div>
-        <div class="sdesc">정확하게 입력해 주세요.</div>
-      </div>
-      <div class="card">
-        <div class="clabel">📝 조합원 정보</div>
-        <div class="field"><label>이름</label><input type="text" id="inp-name" placeholder="홍길동"></div>
-        <div class="field"><label>사번</label><input type="text" id="inp-empno" placeholder="123456" inputmode="numeric"></div>
-        <div class="field"><label>소속 부서</label><input type="text" id="inp-dept" placeholder="운전직 / 역무직 / 기술직 / 사무직"></div>
-        <div class="field">
-          <label>소속 지부</label>
-          <select id="inp-jiboo"><option value="">-- 지부 선택 --</option></select>
-        </div>
-        <div class="field">
-          <label>소속 지회</label>
-          <select id="inp-branch"><option value="">-- 지회 선택 --</option></select>
-        </div>
-        <button class="btn btn-red" onclick="saveProfile()">💾 등록 완료</button>
-        <div class="toast" id="save-msg"></div>
-      </div>
-    </div>
-
-    <div id="sec-profile" style="display:none">
-      <div class="shead">
-        <div class="stitle">내 정보</div>
-        <div class="sdesc">등록된 조합원 정보입니다.</div>
-      </div>
-      <div class="profile-card">
-        <div class="p-name" id="d-name">—</div>
-        <div class="p-meta" id="d-empno">사번: —</div>
-        <div class="p-meta" id="d-dept">소속: —</div>
-        <div class="p-badge" id="d-branch">—</div>
-      </div>
-      <div style="padding:0 16px">
-        <div class="card" style="margin:0 0 10px; background:var(--green-bg); border-color:rgba(46,125,50,0.3)">
-          <div style="font-size:14px; color:#81C784; font-weight:700; margin-bottom:5px">✅ 등록 완료</div>
-          <div style="font-size:13px; color:var(--muted); line-height:1.6">
-            집회 당일 <strong style="color:white">체크인</strong> 탭에서 버튼 한 번만 누르면<br>
-            GPS로 현장 확인 후 자동 참석 처리됩니다.
-          </div>
-        </div>
-        <div class="card" style="margin:0 0 10px; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.3)">
-          <div style="font-size:13px; color:#FCD34D; font-weight:700; margin-bottom:4px">⚠️ 1기기 1회 원칙</div>
-          <div style="font-size:12px; color:var(--muted); line-height:1.6">
-            한 기기에서 같은 집회에 <strong style="color:white">1회만</strong> 체크인 가능합니다.<br>
-            정보를 바꿔도 동일 기기에서 중복 체크인은 차단됩니다.
-          </div>
-        </div>
-        <button class="btn btn-ghost" onclick="editProfile()">✏️ 정보 수정</button>
-      </div>
+      <button class="btn btn-red" onclick="agreeConsent()">동의하고 정보 등록하기</button>
+      <div class="toast err" id="consent-msg">모든 항목에 동의해 주세요.</div>
     </div>
   </div>
 
-  <!-- ══ 2. 체크인 ══ -->
-  <div class="screen" id="screen-checkin">
-
-    <div id="ci-no-profile" style="display:none; padding:0 16px">
-      <div class="shead" style="padding:18px 0 10px">
-        <div class="stitle">체크인</div>
-      </div>
-      <div class="card" style="margin:0; text-align:center">
-        <div style="font-size:40px; margin-bottom:12px">⚠️</div>
-        <p style="color:var(--muted); font-size:14px; margin-bottom:16px">먼저 조합원 정보를 등록해 주세요.</p>
-        <button class="btn btn-red btn-sm" onclick="showTab('member')">정보 등록하러 가기</button>
-      </div>
-    </div>
-
-    <div id="ci-no-rally" style="display:none; padding:0 16px">
-      <div class="shead" style="padding:18px 0 10px">
-        <div class="stitle">체크인</div>
-      </div>
-      <div class="card" style="margin:0; text-align:center">
-        <div style="font-size:40px; margin-bottom:12px">📅</div>
-        <p style="color:var(--muted); font-size:14px">현재 진행 중인 집회가 없습니다.<br>관리자에게 문의해 주세요.</p>
-      </div>
-    </div>
-
-    <div id="ci-main" style="display:none">
-      <div class="shead">
-        <div class="stitle">집회 체크인</div>
-        <div class="sdesc">버튼을 탭하면 GPS로 현장 확인 후 자동 기록됩니다.</div>
-      </div>
-
-      <!-- 집회 정보 -->
-      <div class="rally-banner" id="ci-rally-banner">
-        <div class="rb-label">🔴 진행 중인 집회</div>
-        <div class="rb-name" id="ci-rally-name">—</div>
-        <div class="rb-loc" id="ci-rally-loc">📍 위치 설정 중...</div>
-        <div class="rb-radius" id="ci-rally-radius">반경 1km 이내 참석 인정</div>
-      </div>
-
-      <!-- GPS 상태 -->
-      <div class="gps-bar" id="gps-bar">
-        <div class="gps-icon" id="gps-icon">📍</div>
-        <div class="gps-info">
-          <div class="gps-label">현재 위치 / 집회까지 거리</div>
-          <div class="gps-value unknown" id="gps-value">위치 확인 전</div>
-        </div>
-        <button onclick="refreshGPS()" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:20px; padding:4px">🔄</button>
-      </div>
-
-      <!-- 거리 게이지 -->
-      <div class="dist-gauge" id="dist-gauge" style="display:none">
-        <div style="font-size:12px; color:var(--muted); margin-bottom:4px; display:flex; justify-content:space-between">
-          <span>집회 장소</span><span id="gauge-dist-text">—</span>
-        </div>
-        <div class="gauge-wrap">
-          <div class="gauge-fill" id="gauge-fill" style="width:0%; background:var(--green2)"></div>
-        </div>
-        <div class="gauge-labels"><span>0m</span><span>500m</span><span>1km</span></div>
-      </div>
-
-      <!-- 체크인 버튼 -->
-      <button class="checkin-hero loading" id="ci-btn" onclick="doCheckin()">
-        <span class="ch-icon">📍</span>
-        <div class="ch-title">위치 확인 중...</div>
-        <div class="ch-sub">GPS 신호를 받는 중입니다</div>
-      </button>
-
-      <div class="toast" id="ci-toast" style="margin:0 16px 12px"></div>
-
-      <!-- 내 참석 기록 -->
-      <div class="card">
-        <div class="clabel">📋 내 참석 기록</div>
-        <ul class="a-list" id="my-history">
-          <div class="empty"><div class="ei">📭</div><p>아직 참석 기록이 없습니다</p></div>
-        </ul>
-      </div>
+  <!-- 등록 폼 -->
+  <div id="sec-form" style="display:none">
+    <div class="sh"><div class="st">정보 입력</div><div class="sd">정확하게 입력해 주세요.</div></div>
+    <div class="card">
+      <div class="clbl">📝 조합원 정보</div>
+      <div class="fld"><label>이름</label><input type="text" id="inp-name" placeholder="홍길동"></div>
+      <div class="fld"><label>사번</label><input type="text" id="inp-empno" placeholder="123456" inputmode="numeric"></div>
+      <div class="fld"><label>소속 부서</label><input type="text" id="inp-dept" placeholder="운전직 / 역무직 / 기술직 / 사무직"></div>
+      <div class="fld"><label>소속 지부</label><select id="inp-jiboo"><option value="">-- 지부 선택 --</option></select></div>
+      <div class="fld"><label>소속 지회</label><select id="inp-branch"><option value="">-- 지회 선택 --</option></select></div>
+      <button class="btn btn-red" onclick="saveProfile()">💾 등록 완료</button>
+      <div class="toast" id="save-msg"></div>
     </div>
   </div>
 
-  <!-- ══ 3. 관리자 ══ -->
-  <div class="screen" id="screen-admin">
-
-    <div id="admin-lock">
-      <div class="lock-wrap">
-        <div class="lock-icon">🔐</div>
-        <p>관리자 전용 화면입니다.<br>집행부만 접근 가능합니다.</p>
-        <div class="field">
-          <input type="password" id="admin-pw" placeholder="비밀번호"
-            style="text-align:center; font-size:18px; letter-spacing:4px; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:13px; color:white; width:100%; outline:none"
-            onkeydown="if(event.key==='Enter')adminLogin()">
-        </div>
-        <button class="btn btn-red" onclick="adminLogin()" style="margin-top:8px">입장</button>
-        <div class="toast err" id="admin-pw-msg" style="margin:10px 0 0">비밀번호가 틀렸습니다.</div>
+  <!-- 프로필 -->
+  <div id="sec-profile" style="display:none">
+    <div class="sh"><div class="st">내 정보</div><div class="sd">등록된 조합원 정보입니다.</div></div>
+    <div class="pbadge">
+      <div class="pname" id="d-name"></div>
+      <div class="pmeta" id="d-empno"></div>
+      <div class="pmeta" id="d-dept"></div>
+      <div class="ptag" id="d-branch"></div>
+    </div>
+    <div class="pg">
+      <div class="card" style="margin:0 0 10px;background:var(--gbg);border-color:rgba(46,125,50,0.3)">
+        <div style="font-size:14px;color:#81C784;font-weight:700;margin-bottom:5px">✅ 등록 완료</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">집회 당일 <strong style="color:white">체크인</strong> 탭에서 버튼 한 번만 누르면 GPS로 현장 확인 후 자동 참석 처리됩니다.</div>
       </div>
+      <div class="card" style="margin:0 0 10px;background:var(--ybg);border-color:rgba(245,158,11,0.3)">
+        <div style="font-size:13px;color:#FCD34D;font-weight:700;margin-bottom:4px">⚠️ 1기기 1회 원칙</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">한 기기에서 같은 집회에 <strong style="color:white">1회만</strong> 체크인 가능합니다. 정보를 바꿔도 동일 기기에서 중복 체크인은 차단됩니다.</div>
+      </div>
+      <button class="btn btn-ghost" onclick="editProfile()">✏️ 정보 수정</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 체크인 ══ -->
+<div class="sc" id="sc-checkin">
+  <div id="ci-noprofile" style="display:none;padding:0 16px">
+    <div class="sh" style="padding:18px 0 10px"><div class="st">체크인</div></div>
+    <div class="card" style="margin:0;text-align:center">
+      <div style="font-size:40px;margin-bottom:12px">⚠️</div>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:16px">먼저 조합원 정보를 등록해 주세요.</p>
+      <button class="btn btn-red btn-sm" onclick="showTab('member')">정보 등록하러 가기</button>
+    </div>
+  </div>
+  <div id="ci-norally" style="display:none;padding:0 16px">
+    <div class="sh" style="padding:18px 0 10px"><div class="st">체크인</div></div>
+    <div class="card" style="margin:0;text-align:center">
+      <div style="font-size:40px;margin-bottom:12px">📅</div>
+      <p style="color:var(--muted);font-size:14px">현재 진행 중인 집회가 없습니다.<br>관리자에게 문의해 주세요.</p>
+    </div>
+  </div>
+  <div id="ci-main" style="display:none">
+    <div class="sh"><div class="st">집회 체크인</div><div class="sd">버튼을 탭하면 GPS로 현장 확인 후 자동 기록됩니다.</div></div>
+    <div class="rbanner" id="rbanner">
+      <div class="rblbl">🔴 진행 중인 집회</div>
+      <div class="rbname" id="rb-name">—</div>
+      <div class="rbloc" id="rb-loc">📍 위치 설정 중...</div>
+      <div class="rbtag" id="rb-radius">반경 1km 이내 참석 인정</div>
+    </div>
+    <div class="gbar">
+      <div style="font-size:22px" id="gico">📍</div>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:2px">현재 위치 / 집회까지 거리</div>
+        <div class="gval unk" id="gval">위치 확인 전</div>
+      </div>
+      <button onclick="refreshGPS()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px">🔄</button>
+    </div>
+    <div id="gauge-wrap" style="display:none;margin:0 16px 12px">
+      <div style="font-size:12px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:4px"><span>집회 장소</span><span id="gdist-txt">—</span></div>
+      <div class="gauge-wrap"><div class="gauge-fill" id="gfill" style="width:0%;background:#43A047"></div></div>
+      <div class="gauge-lbl"><span>0m</span><span>500m</span><span>1km</span></div>
+    </div>
+    <button class="chero loading" id="ci-btn" onclick="doCheckin()">
+      <span class="chi">📍</span>
+      <div class="cht">위치 확인 중...</div>
+      <div class="chs">GPS 신호를 받는 중입니다</div>
+    </button>
+    <div class="toast" id="ci-toast" style="margin:0 16px 12px"></div>
+    <div class="card">
+      <div class="clbl">📋 내 참석 기록</div>
+      <ul class="alist" id="my-history"><div class="empty"><div class="ei">📭</div><p>아직 참석 기록이 없습니다</p></div></ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 관리자 ══ -->
+<div class="sc" id="sc-admin">
+  <div id="adm-lock">
+    <div class="lock">
+      <div class="lockico">🔐</div>
+      <p>관리자 전용 화면입니다.<br>집행부만 접근 가능합니다.</p>
+      <div class="fld"><input type="password" id="adm-pw" placeholder="비밀번호" style="text-align:center;font-size:18px;letter-spacing:4px;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:13px;color:white;width:100%;outline:none" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+      <button class="btn btn-red" onclick="adminLogin()" style="margin-top:8px">입장</button>
+      <div class="toast err" id="adm-pw-msg" style="margin:10px 0 0">비밀번호가 틀렸습니다.</div>
+    </div>
+  </div>
+  <div id="adm-dash" style="display:none">
+    <div class="sh"><div class="st">관리자</div></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:0 16px 12px;font-size:12px;color:var(--muted)">
+      <div class="cdot" id="cdot2"></div><span id="ctxt2">연결 확인 중...</span>
     </div>
 
-    <div id="admin-dash" style="display:none">
-      <div class="shead">
-        <div class="stitle">관리자</div>
+    <!-- 집회 활성화 -->
+    <div class="card">
+      <div class="clbl">🎯 집회 활성화</div>
+      <div class="fld"><label>집회 선택</label><select id="adm-event-sel"><option value="">-- 집회 선택 --</option></select></div>
+      <div class="fld"><label>집회 장소명</label><input type="text" id="rally-loc" placeholder="예: 부산시청 앞 광장"></div>
+      <div class="fld"><label>참석 인정 반경</label>
+        <select id="rally-radius">
+          <option value="500">500m</option>
+          <option value="1000" selected>1km</option>
+          <option value="1500">1.5km</option>
+          <option value="2000">2km</option>
+        </select>
       </div>
-
-      <!-- 집회 활성화 -->
-      <div class="card" id="rally-setup-card">
-        <div class="clabel">🎯 집회 활성화</div>
-        <div class="field">
-          <label>집회 선택</label>
-          <select id="admin-event-sel">
-            <option value="">-- 집회 선택 --</option>
-          </select>
+      <!-- 장소 설정 방식 -->
+      <div class="loc-tabs">
+        <button class="ltab on" id="lt-gps" onclick="setLocTab('gps')">📱 현장 GPS (스마트폰)</button>
+        <button class="ltab" id="lt-map" onclick="setLocTab('map')">🗺 주소 검색 (PC)</button>
+      </div>
+      <div id="loc-gps">
+        <button class="btn btn-red" onclick="setRallyGPS()">📍 현재 위치로 집회 장소 설정</button>
+      </div>
+      <div id="loc-map" style="display:none">
+        <div class="fld">
+          <label>주소 검색</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="addr-inp" placeholder="예: 부산시청" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none" onkeydown="if(event.key==='Enter')searchAddr()">
+            <button class="btn btn-red btn-sm" onclick="searchAddr()">검색</button>
+          </div>
         </div>
-        <div class="field">
-          <label>집회 장소명</label>
-          <input type="text" id="rally-loc-name" placeholder="예: 부산시청 앞 광장">
-        </div>
-        <div class="field">
-          <label>참석 인정 반경</label>
-          <select id="rally-radius">
-            <option value="500">500m</option>
-            <option value="1000" selected>1km</option>
-            <option value="1500">1.5km</option>
-            <option value="2000">2km</option>
-          </select>
-        </div>
-        <!-- 장소 설정 방식 선택 -->
-        <div style="display:flex; gap:8px; margin-bottom:10px">
-          <button id="method-gps" onclick="setLocMethod('gps')"
-            style="flex:1; padding:10px 6px; border-radius:10px; border:2px solid var(--red); background:var(--red); color:white; font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:700; cursor:pointer">
-            📱 현장 GPS (스마트폰)
-          </button>
-          <button id="method-map" onclick="setLocMethod('map')"
-            style="flex:1; padding:10px 6px; border-radius:10px; border:2px solid var(--border2); background:var(--surface3); color:var(--muted); font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:700; cursor:pointer">
-            🗺 주소 검색 (PC)
-          </button>
-        </div>
-        <div id="loc-gps">
-          <button class="btn btn-red" onclick="setRallyLocation()">📍 현재 위치로 집회 장소 설정</button>
-        </div>
-        <div id="loc-map" style="display:none">
-          <div class="field">
-            <label>주소 검색</label>
-            <div style="display:flex; gap:8px">
-              <input type="text" id="addr-search" placeholder="예: 부산시청"
-                style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none"
-                onkeydown="if(event.key==='Enter')searchAddress()">
-              <button class="btn btn-red btn-sm" onclick="searchAddress()">검색</button>
+        <div id="addr-results" style="margin-bottom:10px"></div>
+        <div id="manual-wrap" style="display:none">
+          <div class="fld">
+            <label>좌표 직접 입력 (<a href="https://maps.google.com" target="_blank" style="color:var(--red2)">구글지도</a> 우클릭 → 좌표 복사)</label>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <input type="text" id="mlat" placeholder="위도 (35.1795)" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:10px 12px;color:white;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none">
+              <input type="text" id="mlng" placeholder="경도 (129.0756)" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:10px 12px;color:white;font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none">
             </div>
-          </div>
-          <div id="addr-results" style="margin-bottom:10px"></div>
-          <div class="field" style="display:none" id="coord-manual-wrap">
-            <label>또는 좌표 직접 입력 (<a href="https://maps.google.com" target="_blank" style="color:var(--red2)">구글지도</a>에서 우클릭 → 좌표 복사)</label>
-            <div style="display:flex; gap:8px">
-              <input type="text" id="manual-lat" placeholder="위도 (예: 35.1795)" style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:10px 12px; color:white; font-family:'IBM Plex Mono',monospace; font-size:13px; outline:none">
-              <input type="text" id="manual-lng" placeholder="경도 (예: 129.0756)" style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:10px 12px; color:white; font-family:'IBM Plex Mono',monospace; font-size:13px; outline:none">
-            </div>
-            <button class="btn btn-red" style="margin-top:8px" onclick="setRallyManual()">📍 이 좌표로 집회 장소 설정</button>
-          </div>
-          <button onclick="document.getElementById('coord-manual-wrap').style.display='block'" class="btn btn-ghost btn-sm" style="margin-top:0">좌표 직접 입력</button>
-        </div>
-        <div class="toast" id="rally-toast"></div>
-
-        <!-- 현재 활성 집회 표시 -->
-        <div id="active-rally-info" style="display:none; margin-top:14px">
-          <div class="divider" style="margin:14px 0 14px"></div>
-          <div style="background:var(--green-bg); border:1px solid rgba(46,125,50,0.3); border-radius:10px; padding:14px">
-            <div style="font-size:12px; color:#81C784; font-weight:700; margin-bottom:6px">🟢 현재 활성 집회</div>
-            <div style="font-size:15px; font-weight:700; margin-bottom:4px" id="active-name">—</div>
-            <div style="font-size:12px; color:var(--muted)" id="active-loc">—</div>
-            <div style="font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-top:4px" id="active-coords">—</div>
-          </div>
-          <button class="btn btn-ghost btn-sm" style="margin-top:10px; color:#EF9A9A" onclick="clearActiveRally()">집회 종료</button>
-        </div>
-      </div>
-
-      <!-- 집회 관리 -->
-      <div class="card">
-        <div class="clabel">📅 집회 목록 관리</div>
-        <div style="display:flex; gap:8px; margin-bottom:12px">
-          <input type="text" id="new-event-inp" placeholder="새 집회명 입력"
-            style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none">
-          <button class="btn btn-red btn-sm" onclick="addEvent()">추가</button>
-        </div>
-        <div class="pill-wrap" id="event-pill-list"></div>
-      </div>
-
-      <!-- 통계 -->
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-num" id="st-total">—</div><div class="stat-label">총 참석</div></div>
-        <div class="stat-card"><div class="stat-num" id="st-today">—</div><div class="stat-label">오늘</div></div>
-        <div class="stat-card"><div class="stat-num" id="st-branch">—</div><div class="stat-label">지회 수</div></div>
-      </div>
-
-      <!-- 참석자 다운로드 -->
-      <div class="card">
-        <div class="clabel">📥 참석자 명단 다운로드</div>
-        <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6">
-          참석자 명단을 CSV 파일로 내보냅니다.<br>엑셀에서 바로 열 수 있습니다.
-        </p>
-        <div style="display:flex; gap:8px; flex-wrap:wrap">
-          <button class="btn btn-red" onclick="loadAndExportCSV()">📥 전체 명단 다운로드</button>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
-          <div class="field" style="flex:1; margin-bottom:0">
-            <label>집회별 다운로드</label>
-            <select id="export-event-sel" style="background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none; width:100%">
-              <option value="">-- 전체 --</option>
-            </select>
+            <button class="btn btn-red" onclick="setRallyManual()">📍 이 좌표로 집회 장소 설정</button>
           </div>
         </div>
-        <button class="btn btn-ghost" onclick="loadAndExportCSV(true)" style="margin-top:10px">📥 선택 집회만 다운로드</button>
-        <div class="toast" id="export-toast" style="margin-top:10px"></div>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('manual-wrap').style.display='block'" style="margin-top:0">좌표 직접 입력</button>
       </div>
+      <div class="toast" id="rally-toast"></div>
+      <!-- 활성 집회 표시 -->
+      <div id="active-info" style="display:none;margin-top:14px">
+        <div class="divider"></div>
+        <div style="background:var(--gbg);border:1px solid rgba(46,125,50,0.3);border-radius:10px;padding:14px">
+          <div style="font-size:12px;color:#81C784;font-weight:700;margin-bottom:6px">🟢 현재 활성 집회</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px" id="ai-name">—</div>
+          <div style="font-size:12px;color:var(--muted)" id="ai-loc">—</div>
+          <div style="font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:4px" id="ai-coords">—</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:10px;color:#EF9A9A" onclick="clearRally()">집회 종료</button>
+      </div>
+    </div>
 
-      <div style="padding:0 16px 16px; display:flex; flex-direction:column; gap:10px">
-        <button class="btn btn-ghost" onclick="showTab('setting')">⚙️ 시스템 설정</button>
-        <button class="btn btn-ghost" onclick="adminLogout()" style="color:#EF9A9A; border-color:rgba(198,40,40,0.3)">로그아웃</button>
+    <!-- 집회 목록 관리 -->
+    <div class="card">
+      <div class="clbl">📅 집회 목록</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="text" id="new-event-inp" placeholder="새 집회명 입력" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none">
+        <button class="btn btn-red btn-sm" onclick="addEvent()">추가</button>
       </div>
+      <div class="pill-wrap" id="event-pills"></div>
+    </div>
+
+    <!-- 통계 -->
+    <div class="stats">
+      <div class="sbox"><div class="snum" id="st-total">—</div><div class="slbl">총 참석</div></div>
+      <div class="sbox"><div class="snum" id="st-today">—</div><div class="slbl">오늘</div></div>
+      <div class="sbox"><div class="snum" id="st-branch">—</div><div class="slbl">지회 수</div></div>
+    </div>
+
+    <!-- CSV 다운로드 -->
+    <div class="card">
+      <div class="clbl">📥 참석자 명단 다운로드</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">참석자 명단을 CSV 파일로 내보냅니다. 엑셀에서 바로 열 수 있습니다.</p>
+      <button class="btn btn-red" onclick="doExport()">📥 전체 명단 다운로드</button>
+      <div class="fld" style="margin-top:10px">
+        <label>집회별 다운로드</label>
+        <select id="exp-event" style="background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;width:100%;-webkit-appearance:none">
+          <option value="">-- 전체 --</option>
+        </select>
+      </div>
+      <button class="btn btn-ghost" onclick="doExport(true)" style="margin-top:0">📥 선택 집회만 다운로드</button>
+      <div class="toast" id="exp-toast" style="margin-top:10px"></div>
+    </div>
+
+    <!-- 설정 & 로그아웃 -->
+    <div style="padding:0 16px 16px;display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-ghost" onclick="showTab('setting')">⚙️ 시스템 설정</button>
+      <button class="btn btn-ghost" onclick="adminLogout()" style="color:#EF9A9A;border-color:rgba(204,0,0,0.3)">로그아웃</button>
     </div>
   </div>
+</div>
 
-  <!-- ══ 4. 설정 ══ -->
-  <div class="screen" id="screen-setting">
-    <div class="shead">
-      <div class="stitle">⚙️ 시스템 설정</div>
-      <div class="sdesc" style="color:#EF9A9A">관리자 전용 화면입니다.</div>
-    </div>
-    <div style="margin:0 16px 12px">
-      <button class="btn btn-ghost" onclick="showTab('admin')" style="color:var(--muted)">← 관리자 화면으로 돌아가기</button>
-    </div>
-
-    <div class="card">
-      <div class="clabel">🔗 Google Sheets 연동</div>
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:13px; color:var(--muted)">
-        <div class="cdot" id="cdot2"></div>
-        <span id="ctxt2">연결 상태 확인 중...</span>
-      </div>
-      <div class="field">
-        <label>Apps Script 웹 앱 URL</label>
-        <div class="url-row">
-          <input type="url" id="url-inp" placeholder="https://script.google.com/macros/s/...">
-          <button class="btn btn-red btn-sm" onclick="saveUrl()">저장</button>
-        </div>
-      </div>
-      <button class="btn btn-ghost btn-sm" onclick="testConn()" style="margin-top:0">🔗 연결 테스트</button>
-      <div class="toast" id="url-toast"></div>
-    </div>
-
-    <div class="card">
-      <div class="clabel">📖 최초 설정 방법</div>
-      <div class="setup-step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <strong>Google Sheets 새 파일 만들기</strong>
-          <p><a href="https://sheets.google.com" target="_blank" style="color:var(--red2)">sheets.google.com</a> → 새 스프레드시트<br>파일명: <code>노조 집회 참석 관리</code></p>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <strong>Apps Script 열기</strong>
-          <p>메뉴 → <code>확장 프로그램</code> → <code>Apps Script</code></p>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <strong>코드 붙여넣기</strong>
-          <p>기존 코드 전체 삭제 후 아래 버튼 탭 → 복사 → 붙여넣기 → 저장(💾)</p>
-          <button class="copy-btn" onclick="copyCode(this)">📋 탭하면 코드가 복사됩니다</button>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <strong>웹 앱으로 배포</strong>
-          <p><code>배포</code> → <code>새 배포</code> → 유형: <code>웹 앱</code><br>
-          실행: <code>나</code> / 액세스: <code>모든 사용자</code> → URL 복사</p>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <strong>위 URL 입력 → 저장 → 연결 테스트</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="clabel">🏢 지부 목록</div>
-      <div style="display:flex; gap:8px; margin-bottom:12px">
-        <input type="text" id="new-jiboo-inp" placeholder="지부명 입력"
-          style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none">
-        <button class="btn btn-red btn-sm" onclick="addJibooUI()">추가</button>
-      </div>
-      <ul id="jiboo-list" style="list-style:none"></ul>
-    </div>
-
-    <div class="card">
-      <div class="clabel">🏢 지회 목록</div>
-      <div style="display:flex; gap:8px; margin-bottom:12px">
-        <input type="text" id="new-branch-inp" placeholder="지회명 입력"
-          style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none">
-        <button class="btn btn-red btn-sm" onclick="addBranch()">추가</button>
-      </div>
-      <ul id="branch-list" style="list-style:none"></ul>
-    </div>
-
-    <div class="card">
-      <div class="clabel">🔑 관리자 비밀번호</div>
-      <div class="field"><label>현재 비밀번호</label><input type="password" id="pw-cur" placeholder="현재 비밀번호"></div>
-      <div class="field"><label>새 비밀번호</label><input type="password" id="pw-new" placeholder="새 비밀번호 (4자 이상)"></div>
-      <div class="field"><label>확인</label><input type="password" id="pw-con" placeholder="다시 입력"></div>
-      <button class="btn btn-red" onclick="changePw()">변경</button>
-      <div class="toast" id="pw-toast"></div>
-    </div>
-
-    <div class="privacy-note">
-      수집된 개인정보 및 위치정보는 노동조합 내부 집회 참석 관리 목적으로만 사용됩니다.<br>
-      개인정보보호법 제15조 / 위치정보법 제18조 준수
-    </div>
+<!-- ══ 설정 (관리자 전용) ══ -->
+<div class="sc" id="sc-setting">
+  <div class="sh">
+    <div class="st">⚙️ 시스템 설정</div>
+    <div class="sd" style="color:#EF9A9A">관리자 전용 화면입니다.</div>
   </div>
+  <div style="padding:0 16px 12px">
+    <button class="btn btn-ghost" onclick="showTab('admin')" style="color:var(--muted)">← 관리자 화면으로 돌아가기</button>
+  </div>
+
+  <div class="card">
+    <div class="clbl">🔗 Google Sheets 연동</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px;color:var(--muted)">
+      <div class="cdot" id="cdot3"></div><span id="ctxt3">연결 상태 확인 중...</span>
+    </div>
+    <div class="fld">
+      <label>Apps Script 웹 앱 URL</label>
+      <div class="urlrow">
+        <input type="url" id="url-inp" placeholder="https://script.google.com/macros/s/...">
+        <button class="btn btn-red btn-sm" onclick="saveUrl()">저장</button>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="testConn()" style="margin-top:0">🔗 연결 테스트</button>
+    <div class="toast" id="url-toast"></div>
+  </div>
+
+  <div class="card">
+    <div class="clbl">📖 설정 방법</div>
+    <div class="sstep"><div class="snum2">1</div><div class="sbody"><strong>Google Sheets 파일 열기</strong><p>기존 파일 <code>노조 집회 참석 관리</code> 열기</p></div></div>
+    <div class="sstep"><div class="snum2">2</div><div class="sbody"><strong>Apps Script 열기</strong><p>메뉴 → <code>확장 프로그램</code> → <code>Apps Script</code></p></div></div>
+    <div class="sstep"><div class="snum2">3</div><div class="sbody"><strong>코드 교체</strong><p>Ctrl+A → Delete → 아래 버튼으로 복사 → 붙여넣기 → 저장</p><button class="copybtn" onclick="copyCode(this)">📋 탭하면 코드가 복사됩니다</button></div></div>
+    <div class="sstep"><div class="snum2">4</div><div class="sbody"><strong>재배포</strong><p><code>배포</code> → <code>배포 관리</code> → ✏️ → 버전: <code>새 버전</code> → 저장</p></div></div>
+    <div class="sstep"><div class="snum2">5</div><div class="sbody"><strong>새 URL이 생기면 위 입력란에 저장</strong></div></div>
+  </div>
+
+  <div class="card">
+    <div class="clbl">🏢 지부 목록</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input type="text" id="new-jiboo-inp" placeholder="지부명 입력" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none">
+      <button class="btn btn-red btn-sm" onclick="addJibooUI()">추가</button>
+    </div>
+    <ul id="jiboo-list" style="list-style:none"></ul>
+  </div>
+
+  <div class="card">
+    <div class="clbl">🏢 지회 목록</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input type="text" id="new-branch-inp" placeholder="지회명 입력" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none">
+      <button class="btn btn-red btn-sm" onclick="addBranchUI()">추가</button>
+    </div>
+    <ul id="branch-list" style="list-style:none"></ul>
+  </div>
+
+  <div class="card">
+    <div class="clbl">🔑 관리자 비밀번호</div>
+    <div class="fld"><label>현재 비밀번호</label><input type="password" id="pw-cur" placeholder="현재 비밀번호"></div>
+    <div class="fld"><label>새 비밀번호</label><input type="password" id="pw-new" placeholder="새 비밀번호 (4자 이상)"></div>
+    <div class="fld"><label>확인</label><input type="password" id="pw-con" placeholder="다시 입력"></div>
+    <button class="btn btn-red" onclick="changePw()">변경</button>
+    <div class="toast" id="pw-toast"></div>
+  </div>
+
+  <div class="pnote">수집된 개인정보 및 위치정보는 노동조합 내부 집회 참석 관리 목적으로만 사용됩니다.<br>개인정보보호법 제15조 / 위치정보법 제18조 준수</div>
+</div>
 
 </main>
 
+<!-- BOTTOM NAV (3개만) -->
 <nav class="bnav">
-  <button class="nbtn active" onclick="showTab('member')" id="nav-member"><div class="ni">👤</div>내 정보</button>
-  <button class="nbtn" onclick="showTab('checkin')" id="nav-checkin"><div class="ni">✊</div>체크인</button>
-  <button class="nbtn" onclick="showTab('admin')" id="nav-admin"><div class="ni">🛡</div>관리자</button>
+  <button class="nb on" onclick="showTab('member')" id="nav-member"><div class="ni">👤</div>내 정보</button>
+  <button class="nb" onclick="showTab('checkin')" id="nav-checkin"><div class="ni">✊</div>체크인</button>
+  <button class="nb" onclick="showTab('admin')" id="nav-admin"><div class="ni">🛡</div>관리자</button>
 </nav>
 
 <script>
-// ═══════════════════════════
-//  Apps Script 코드
-// ═══════════════════════════
-const APPS_SCRIPT_CODE = `// ✊ 부산지하철노동조합 집회 체크인 시스템 (위치 기반)
-// Google Apps Script에 붙여넣기 후 웹 앱으로 배포
+// ══════════════════════════════
+//  APPS SCRIPT CODE
+// ══════════════════════════════
+const ASC = `// ✊ 부산지하철노동조합 집회 체크인 시스템
 // 액세스 권한: 모든 사용자 (조합원 구글 계정 불필요)
+const SH_ATTEND='참석자',SH_EVENTS='집회목록',SH_BRANCHES='지회목록',SH_RALLY='활성집회',SH_JIBOO='지부목록';
+function getSheet(name,headers){const ss=SpreadsheetApp.getActiveSpreadsheet();let sh=ss.getSheetByName(name);if(!sh){sh=ss.insertSheet(name);sh.appendRow(headers);sh.getRange(1,1,1,headers.length).setFontWeight('bold').setBackground('#B71C1C').setFontColor('white');sh.setFrozenRows(1);}return sh;}
+function doGet(e){return respond(e);}
+function doPost(e){return respond(e);}
+function respond(e){const p=e.parameter||{};let b={};try{b=JSON.parse((e.postData||{}).contents||'{}');}catch(err){}const action=p.action||b.action;let result;try{if(action==='ping')result={ok:true};else if(action==='checkin')result=checkin(b);else if(action==='getActiveRally')result=getActiveRally();else if(action==='setActiveRally')result=setActiveRally(b);else if(action==='clearRally')result=clearRally();else if(action==='getEvents')result=getEvents();else if(action==='addEvent')result=addEvent(b.name);else if(action==='removeEvent')result=removeEvent(b.name);else if(action==='getAttendees')result=getAttendees(b);else if(action==='getBranches')result=getBranches();else if(action==='addBranch')result=addBranch(b.name);else if(action==='removeBranch')result=removeBranch(b.name);else if(action==='getJiboo')result=getJiboo();else if(action==='addJiboo')result=addJiboo(b.name);else if(action==='removeJiboo')result=removeJiboo(b.name);else result={ok:false,msg:'Unknown: '+action};}catch(err){result={ok:false,msg:err.toString()};}return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);}
+function checkin(d){const sh=getSheet(SH_ATTEND,['타임스탬프','이름','사번','소속','지부','지회','집회명','날짜','시간','위도','경도','거리(m)','기기ID']);const rows=sh.getDataRange().getValues();for(let i=1;i<rows.length;i++){const row=rows[i];if(row[6]!==d.eventName)continue;if(d.deviceId&&String(row[12])===String(d.deviceId))return{ok:false,dup:true,msg:'이 기기에서 이미 체크인되었습니다.'};}const now=new Date();sh.appendRow([now.toISOString(),d.name,d.empno,d.dept,d.jiboo||'',d.branch,d.eventName,Utilities.formatDate(now,'Asia/Seoul','yyyy-MM-dd'),Utilities.formatDate(now,'Asia/Seoul','HH:mm:ss'),d.lat||'',d.lng||'',d.distance||'',d.deviceId||'']);return{ok:true};}
+function getActiveRally(){const sh=getSheet(SH_RALLY,['집회명','장소명','위도','경도','반경(m)','설정시간']);const rows=sh.getDataRange().getValues().slice(1).filter(r=>r[0]);if(!rows.length)return{ok:true,rally:null};const r=rows[rows.length-1];return{ok:true,rally:{eventName:r[0],locName:r[1],lat:r[2],lng:r[3],radius:r[4],setAt:r[5]}};}
+function setActiveRally(d){const sh=getSheet(SH_RALLY,['집회명','장소명','위도','경도','반경(m)','설정시간']);const lr=sh.getLastRow();if(lr>1)sh.getRange(2,1,lr-1,6).clearContent();sh.appendRow([d.eventName,d.locName,d.lat,d.lng,d.radius,new Date().toISOString()]);return{ok:true};}
+function clearRally(){const sh=getSheet(SH_RALLY,['집회명','장소명','위도','경도','반경(m)','설정시간']);const lr=sh.getLastRow();if(lr>1)sh.getRange(2,1,lr-1,6).clearContent();return{ok:true};}
+function getEvents(){const sh=getSheet(SH_EVENTS,['집회명','등록일']);return{ok:true,events:sh.getDataRange().getValues().slice(1).filter(r=>r[0]).map(r=>r[0])};}
+function addEvent(name){if(!name)return{ok:false};const sh=getSheet(SH_EVENTS,['집회명','등록일']);if(sh.getDataRange().getValues().slice(1).some(r=>r[0]===name))return{ok:false,msg:'이미 존재'};sh.appendRow([name,new Date().toISOString()]);return{ok:true};}
+function removeEvent(name){const sh=getSheet(SH_EVENTS,['집회명','등록일']);const rows=sh.getDataRange().getValues();for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}return{ok:true};}
+function getAttendees(p){const sh=getSheet(SH_ATTEND,['타임스탬프','이름','사번','소속','지부','지회','집회명','날짜','시간','위도','경도','거리(m)','기기ID']);const rows=sh.getDataRange().getValues().slice(1);let data=rows.filter(r=>r[0]).map(r=>({timestamp:r[0],name:r[1],empno:r[2],dept:r[3],jiboo:r[4],branch:r[5],eventName:r[6],dateStr:r[7],timeStr:r[8],lat:r[9],lng:r[10],distance:r[11]}));if(p&&p.empno)data=data.filter(r=>String(r.empno)===String(p.empno));return{ok:true,attendees:data.reverse()};}
+function getBranches(){const sh=getSheet(SH_BRANCHES,['지회명']);const rows=sh.getDataRange().getValues().slice(1).filter(r=>r[0]);if(!rows.length){const def=['1지회','2지회','3지회','4지회','5지회','본조','직속'];def.forEach(b=>sh.appendRow([b]));return{ok:true,branches:def};}return{ok:true,branches:rows.map(r=>r[0])};}
+function addBranch(name){if(!name)return{ok:false};getSheet(SH_BRANCHES,['지회명']).appendRow([name]);return{ok:true};}
+function removeBranch(name){const sh=getSheet(SH_BRANCHES,['지회명']);const rows=sh.getDataRange().getValues();for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}return{ok:true};}
+function getJiboo(){const sh=getSheet(SH_JIBOO,['지부명']);const rows=sh.getDataRange().getValues().slice(1).filter(r=>r[0]);if(!rows.length){const def=['부산지부','경남지부','울산지부','본부직속'];def.forEach(b=>sh.appendRow([b]));return{ok:true,jiboos:def};}return{ok:true,jiboos:rows.map(r=>r[0])};}
+function addJiboo(name){if(!name)return{ok:false};getSheet(SH_JIBOO,['지부명']).appendRow([name]);return{ok:true};}
+function removeJiboo(name){const sh=getSheet(SH_JIBOO,['지부명']);const rows=sh.getDataRange().getValues();for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}return{ok:true};}`;
 
-const SH_ATTEND   = '참석자';
-const SH_EVENTS   = '집회목록';
-const SH_BRANCHES = '지회목록';
-const SH_RALLY    = '활성집회';
+// ══════════════════════════════
+//  CONFIG
+// ══════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0gU3Eg8kdxa7mIWieXpMyNDOgOL9F5luB2zlQhFodGsjZ47wOS_HCHG_l431phOd42A/exec';
 
-function getSheet(name, headers) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sh = ss.getSheetByName(name);
-  if (!sh) {
-    sh = ss.insertSheet(name);
-    sh.appendRow(headers);
-    sh.getRange(1,1,1,headers.length).setFontWeight('bold').setBackground('#B71C1C').setFontColor('white');
-    sh.setFrozenRows(1);
-  }
-  return sh;
-}
-
-function doGet(e)  { return respond(e); }
-function doPost(e) { return respond(e); }
-
-function respond(e) {
-  const p = e.parameter || {};
-  let b = {};
-  try { b = JSON.parse((e.postData||{}).contents||'{}'); } catch(err) {}
-  const action = p.action || b.action;
-  let result;
-  try {
-    if      (action==='ping')           result = { ok:true };
-    else if (action==='checkin')        result = checkin(b);
-    else if (action==='getActiveRally') result = getActiveRally();
-    else if (action==='setActiveRally') result = setActiveRally(b);
-    else if (action==='clearRally')     result = clearRally();
-    else if (action==='getEvents')      result = getEvents();
-    else if (action==='addEvent')       result = addEvent(b.name);
-    else if (action==='removeEvent')    result = removeEvent(b.name);
-    else if (action==='getAttendees')   result = getAttendees(b);
-    else if (action==='getBranches')    result = getBranches();
-    else if (action==='addBranch')      result = addBranch(b.name);
-    else if (action==='removeBranch')   result = removeBranch(b.name);
-    else if (action==='getJiboo')      result = getJiboo();
-    else if (action==='addJiboo')      result = addJiboo(b.name);
-    else if (action==='removeJiboo')   result = removeJiboo(b.name);
-    else result = { ok:false, msg:'Unknown: '+action };
-  } catch(err) {
-    result = { ok:false, msg:err.toString() };
-  }
-  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
-}
-
-function checkin(d) {
-  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지부','지회','집회명','날짜','시간','위도','경도','거리(m)','기기ID']);
-  const rows = sh.getDataRange().getValues();
-  for (let i=1;i<rows.length;i++) {
-    const row = rows[i];
-    if (row[6] !== d.eventName) continue;
-    // 기기ID 기준으로만 중복 차단 (1기기 = 1회 체크인)
-    if (d.deviceId && String(row[12]) === String(d.deviceId))
-      return { ok:false, dup:true, dupType:'device', msg:'이 기기에서 이미 체크인되었습니다.' };
-  }
-  const now = new Date();
-  sh.appendRow([
-    now.toISOString(), d.name, d.empno, d.dept, d.jiboo||'', d.branch, d.eventName,
-    Utilities.formatDate(now,'Asia/Seoul','yyyy-MM-dd'),
-    Utilities.formatDate(now,'Asia/Seoul','HH:mm:ss'),
-    d.lat||'', d.lng||'', d.distance||'', d.deviceId||''
-  ]);
-  return { ok:true };
-}
-
-function getActiveRally() {
-  const sh = getSheet(SH_RALLY, ['집회명','장소명','위도','경도','반경(m)','설정시간']);
-  const rows = sh.getDataRange().getValues().slice(1).filter(r=>r[0]);
-  if (!rows.length) return { ok:true, rally:null };
-  const r = rows[rows.length-1];
-  return { ok:true, rally:{ eventName:r[0], locName:r[1], lat:r[2], lng:r[3], radius:r[4], setAt:r[5] } };
-}
-
-function setActiveRally(d) {
-  const sh = getSheet(SH_RALLY, ['집회명','장소명','위도','경도','반경(m)','설정시간']);
-  // 기존 데이터 초기화 후 새로 기록
-  const lastRow = sh.getLastRow();
-  if (lastRow > 1) sh.getRange(2,1,lastRow-1,6).clearContent();
-  sh.appendRow([d.eventName, d.locName, d.lat, d.lng, d.radius, new Date().toISOString()]);
-  return { ok:true };
-}
-
-function clearRally() {
-  const sh = getSheet(SH_RALLY, ['집회명','장소명','위도','경도','반경(m)','설정시간']);
-  const lastRow = sh.getLastRow();
-  if (lastRow > 1) sh.getRange(2,1,lastRow-1,6).clearContent();
-  return { ok:true };
-}
-
-function getEvents() {
-  const sh = getSheet(SH_EVENTS, ['집회명','등록일']);
-  const rows = sh.getDataRange().getValues().slice(1);
-  return { ok:true, events:rows.filter(r=>r[0]).map(r=>r[0]) };
-}
-function addEvent(name) {
-  if (!name) return {ok:false};
-  const sh = getSheet(SH_EVENTS,['집회명','등록일']);
-  if (sh.getDataRange().getValues().slice(1).some(r=>r[0]===name)) return {ok:false,msg:'이미 존재'};
-  sh.appendRow([name, new Date().toISOString()]);
-  return {ok:true};
-}
-function removeEvent(name) {
-  const sh = getSheet(SH_EVENTS,['집회명','등록일']);
-  const rows = sh.getDataRange().getValues();
-  for (let i=rows.length-1;i>=1;i--) { if(rows[i][0]===name){sh.deleteRow(i+1);break;} }
-  return {ok:true};
-}
-
-function getAttendees(p) {
-  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지부','지회','집회명','날짜','시간','위도','경도','거리(m)']);
-  const rows = sh.getDataRange().getValues().slice(1);
-  let data = rows.filter(r=>r[0]).map(r=>({
-    timestamp:r[0],name:r[1],empno:r[2],dept:r[3],
-    jiboo:r[4],branch:r[5],eventName:r[6],dateStr:r[7],timeStr:r[8],
-    lat:r[9],lng:r[10],distance:r[11]
-  }));
-  if (p&&p.empno) data=data.filter(r=>String(r.empno)===String(p.empno));
-  return {ok:true, attendees:data.reverse()};
-}
-
-const SH_JIBOO = '지부목록';
-
-function getBranches() {
-  const sh = getSheet(SH_BRANCHES,['지회명']);
-  const rows = sh.getDataRange().getValues().slice(1).filter(r=>r[0]);
-  if (!rows.length) {
-    const def=['1지회','2지회','3지회','4지회','5지회','본조','직속'];
-    def.forEach(b=>sh.appendRow([b]));
-    return {ok:true, branches:def};
-  }
-  return {ok:true, branches:rows.map(r=>r[0])};
-}
-function addBranch(name) {
-  if(!name) return {ok:false};
-  getSheet(SH_BRANCHES,['지회명']).appendRow([name]);
-  return {ok:true};
-}
-function removeBranch(name) {
-  const sh=getSheet(SH_BRANCHES,['지회명']);
-  const rows=sh.getDataRange().getValues();
-  for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}
-  return {ok:true};
-}
-function getJiboo() {
-  const sh = getSheet(SH_JIBOO,['지부명']);
-  const rows = sh.getDataRange().getValues().slice(1).filter(r=>r[0]);
-  if (!rows.length) {
-    const def=['부산지부','경남지부','울산지부','본부직속'];
-    def.forEach(b=>sh.appendRow([b]));
-    return {ok:true, jiboos:def};
-  }
-  return {ok:true, jiboos:rows.map(r=>r[0])};
-}
-function addJiboo(name) {
-  if(!name) return {ok:false};
-  getSheet(SH_JIBOO,['지부명']).appendRow([name]);
-  return {ok:true};
-}
-function removeJiboo(name) {
-  const sh=getSheet(SH_JIBOO,['지부명']);
-  const rows=sh.getDataRange().getValues();
-  for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}
-  return {ok:true};
-}`;
-
-// ═══════════════════════════
-//  STATE
-// ═══════════════════════════
 const LS = (k,v) => v!==undefined ? localStorage.setItem(k,JSON.stringify(v)) : JSON.parse(localStorage.getItem(k)||'null');
-let SCRIPT_URL  = localStorage.getItem('ucfg_url') || 'https://script.google.com/macros/s/AKfycbz0gU3Eg8kdxa7mIWieXpMyNDOgOL9F5luB2zlQhFodGsjZ47wOS_HCHG_l431phOd42A/exec';
-let ADMIN_PW    = localStorage.getItem('ucfg_pw')  || 'union2026';
-let profile     = LS('union_profile');
-let events      = LS('union_events')   || [];
-let branches    = LS('union_branches') || ['1지회','2지회','3지회','4지회','5지회','본조','직속'];
-let activeRally = LS('union_active_rally'); // { eventName, locName, lat, lng, radius }
-let allAttendees = [];
-let jiboos = JSON.parse(localStorage.getItem('union_jiboos')||'null') || ['부산지부','경남지부','울산지부','본부직속'];
-let userLat = null, userLng = null;
-let gpsWatcher = null;
-let checkinDone = false;
+let ADMIN_PW   = localStorage.getItem('ucfg_pw') || 'union2026';
+let profile    = LS('union_profile');
+let events     = LS('union_events')   || [];
+let branches   = LS('union_branches') || ['1지회','2지회','3지회','4지회','5지회','본조','직속'];
+let jiboos     = LS('union_jiboos')   || ['부산지부','경남지부','울산지부','본부직속'];
+let activeRally= LS('union_rally');
+let allAttendees=[];
+let userLat=null, userLng=null, gpsWatch=null, ciDone=false;
 
-// ═══════════════════════════
-//  API
-// ═══════════════════════════
+// ── 기기 고유ID ──
+function getDeviceId() {
+  let d = localStorage.getItem('union_did');
+  if (!d) { d = btoa(navigator.userAgent||'').slice(0,8)+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2); localStorage.setItem('union_did',d); }
+  return d;
+}
+
+// ── API ──
 async function api(action, data={}) {
-  if (!SCRIPT_URL) throw new Error('NO_URL');
-  const res = await fetch(SCRIPT_URL + '?action=' + action, {
-    method: 'POST', body: JSON.stringify({action,...data}),
-    headers: {'Content-Type':'text/plain'}
-  });
+  const url = localStorage.getItem('ucfg_url') || SCRIPT_URL;
+  const res = await fetch(url+'?action='+action, { method:'POST', body:JSON.stringify({action,...data}), headers:{'Content-Type':'text/plain'} });
   return res.json();
 }
 
-// ═══════════════════════════
+// ── LOGO ──
+const LOGO_SRC = 'data:image/jpeg;base64,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';
+
+// ══════════════════════════════
 //  INIT
-// ═══════════════════════════
+// ══════════════════════════════
 window.addEventListener('load', () => {
-  document.getElementById('url-inp').value = SCRIPT_URL;
+  document.getElementById('hdr-logo').src  = LOGO_SRC;
+  document.getElementById('sov-logo').src  = LOGO_SRC;
+  document.getElementById('url-inp').value = localStorage.getItem('ucfg_url') || SCRIPT_URL;
   initMember();
-  renderJibooSelect();
-  renderBranchSelect();
-  renderBranchList();
-  renderEventPills();
-  renderAdminEventSelect();
+  renderJibooSel(); renderBranchSel();
+  renderJibooList(); renderBranchList();
+  renderEventPills(); renderAdmEventSel();
   checkConn();
-  if (SCRIPT_URL) { loadBranches(); loadJiboos(); loadEvents(); loadActiveRally(); }
+  if (SCRIPT_URL) { loadJiboos(); loadBranches(); loadEvents(); loadRally(); }
 });
 
-// ═══════════════════════════
+// ══════════════════════════════
 //  TAB
-// ═══════════════════════════
-function showTab(tab) {
-  ['member','checkin','admin','setting'].forEach(t => {
-    document.getElementById('screen-'+t).classList.toggle('active', t===tab);
-    const nav = document.getElementById('nav-'+t);
-    if (nav) nav.classList.toggle('active', t===tab);
+// ══════════════════════════════
+function showTab(t) {
+  ['member','checkin','admin','setting'].forEach(s => {
+    document.getElementById('sc-'+s).classList.toggle('on', s===t);
+    const n = document.getElementById('nav-'+s);
+    if (n) n.classList.toggle('on', s===t);
   });
-  if (tab==='checkin') initCheckin();
+  if (t==='checkin') initCheckin();
 }
 
-// ═══════════════════════════
+// ══════════════════════════════
 //  CONSENT
-// ═══════════════════════════
+// ══════════════════════════════
 function agreeConsent() {
-  if (!document.getElementById('c1').checked ||
-      !document.getElementById('c2').checked ||
-      !document.getElementById('c3').checked) {
+  if (!document.getElementById('c1').checked||!document.getElementById('c2').checked||!document.getElementById('c3').checked) {
     showToast('consent-msg','err','모든 항목에 동의해 주세요.'); return;
   }
   localStorage.setItem('union_consented','1');
@@ -952,646 +603,442 @@ function agreeConsent() {
   document.getElementById('sec-form').style.display='block';
 }
 
-// ═══════════════════════════
+// ══════════════════════════════
 //  MEMBER
-// ═══════════════════════════
+// ══════════════════════════════
 function initMember() {
-  const consented = localStorage.getItem('union_consented');
-  if (profile) {
-    document.getElementById('sec-consent').style.display='none';
-    document.getElementById('sec-form').style.display='none';
-    document.getElementById('sec-profile').style.display='block';
-    renderProfile();
-  } else if (consented) {
-    document.getElementById('sec-consent').style.display='none';
-    document.getElementById('sec-form').style.display='block';
-  }
+  const ok = localStorage.getItem('union_consented');
+  if (profile) { hide('sec-consent'); hide('sec-form'); show('sec-profile'); renderProfile(); }
+  else if (ok)  { hide('sec-consent'); show('sec-form'); }
 }
 
 function saveProfile() {
-  const name=document.getElementById('inp-name').value.trim();
-  const empno=document.getElementById('inp-empno').value.trim();
-  const dept=document.getElementById('inp-dept').value.trim();
+  const name=v('inp-name'), empno=v('inp-empno'), dept=v('inp-dept');
   const jiboo=document.getElementById('inp-jiboo').value;
   const branch=document.getElementById('inp-branch').value;
   if (!name||!empno||!dept||!jiboo||!branch) { showToast('save-msg','err','모든 항목을 입력해 주세요.'); return; }
   profile={name,empno,dept,jiboo,branch};
   LS('union_profile',profile);
   showToast('save-msg','ok','✅ 등록 완료!');
-  setTimeout(()=>{
-    document.getElementById('sec-form').style.display='none';
-    document.getElementById('sec-profile').style.display='block';
-    renderProfile();
-  },700);
+  setTimeout(()=>{ hide('sec-form'); show('sec-profile'); renderProfile(); },700);
 }
 
 function renderProfile() {
-  document.getElementById('d-name').textContent  = profile.name;
-  document.getElementById('d-empno').textContent = '사번: '+profile.empno;
-  document.getElementById('d-dept').textContent  = '소속: '+profile.dept;
-  document.getElementById('d-branch').textContent = (profile.jiboo||'') + ' ' + (profile.branch||'');
+  setText('d-name', profile.name);
+  setText('d-empno','사번: '+profile.empno);
+  setText('d-dept', '소속: '+profile.dept);
+  setText('d-branch',(profile.jiboo||'')+' '+( profile.branch||''));
 }
 
 function editProfile() {
-  document.getElementById('sec-profile').style.display='none';
-  document.getElementById('sec-form').style.display='block';
+  hide('sec-profile'); show('sec-form');
   if (profile) {
-    document.getElementById('inp-name').value   = profile.name;
-    document.getElementById('inp-empno').value  = profile.empno;
-    document.getElementById('inp-dept').value   = profile.dept;
-    document.getElementById('inp-jiboo').value  = profile.jiboo||'';
-    document.getElementById('inp-branch').value = profile.branch;
+    set('inp-name',profile.name); set('inp-empno',profile.empno);
+    set('inp-dept',profile.dept);
+    document.getElementById('inp-jiboo').value=profile.jiboo||'';
+    document.getElementById('inp-branch').value=profile.branch||'';
   }
 }
 
-// ═══════════════════════════
+// ══════════════════════════════
 //  CHECKIN
-// ═══════════════════════════
+// ══════════════════════════════
 function initCheckin() {
-  checkinDone = false;
-  if (!profile) {
-    document.getElementById('ci-no-profile').style.display='block';
-    document.getElementById('ci-no-rally').style.display='none';
-    document.getElementById('ci-main').style.display='none';
-    return;
-  }
+  ciDone=false;
+  if (!profile) { show('ci-noprofile'); hide('ci-norally'); hide('ci-main'); return; }
+  hide('ci-noprofile');
   if (!activeRally) {
-    // 서버에서 다시 조회
-    if (SCRIPT_URL) loadActiveRally().then(()=> { if (!activeRally) showNoRally(); else showCheckinMain(); });
-    else showNoRally();
+    if (SCRIPT_URL) loadRally().then(()=>{ activeRally ? showCiMain() : showCiNoRally(); });
+    else showCiNoRally();
     return;
   }
-  showCheckinMain();
+  showCiMain();
 }
 
-function showNoRally() {
-  document.getElementById('ci-no-profile').style.display='none';
-  document.getElementById('ci-no-rally').style.display='block';
-  document.getElementById('ci-main').style.display='none';
-}
-
-function showCheckinMain() {
-  document.getElementById('ci-no-profile').style.display='none';
-  document.getElementById('ci-no-rally').style.display='none';
-  document.getElementById('ci-main').style.display='block';
-  // 집회 정보 표시
-  document.getElementById('ci-rally-name').textContent = activeRally.eventName;
-  document.getElementById('ci-rally-loc').textContent  = '📍 '+activeRally.locName;
-  document.getElementById('ci-rally-radius').textContent = '반경 '+(activeRally.radius>=1000?(activeRally.radius/1000)+'km':activeRally.radius+'m')+' 이내 참석 인정';
-  // GPS 시작
+function showCiNoRally() { hide('ci-noprofile'); show('ci-norally'); hide('ci-main'); }
+function showCiMain() {
+  hide('ci-noprofile'); hide('ci-norally'); show('ci-main');
+  setText('rb-name', activeRally.eventName);
+  setText('rb-loc',  '📍 '+activeRally.locName);
+  const r=parseInt(activeRally.radius);
+  setText('rb-radius','반경 '+(r>=1000?(r/1000)+'km':r+'m')+' 이내 참석 인정');
   startGPS();
   loadMyHistory();
 }
 
-// GPS 감시
 function startGPS() {
-  if (!navigator.geolocation) {
-    setGPSUI('unknown', '위치 기능 미지원');
-    setBtnState('out-of-range', '❌', 'GPS 미지원', '브라우저가 위치를 지원하지 않습니다');
-    return;
-  }
-  setGPSUI('unknown', '위치 확인 중...');
-  setBtnState('loading', '📍', '위치 확인 중...', 'GPS 신호를 받는 중입니다');
-
-  if (gpsWatcher) navigator.geolocation.clearWatch(gpsWatcher);
-  gpsWatcher = navigator.geolocation.watchPosition(
-    pos => {
-      userLat = pos.coords.latitude;
-      userLng = pos.coords.longitude;
-      updateDistanceUI();
-    },
-    err => {
-      setGPSUI('unknown', '위치 접근 거부됨');
-      setBtnState('out-of-range','❌','위치 접근 불가','설정에서 위치 권한을 허용해 주세요');
-    },
-    { enableHighAccuracy:true, maximumAge:10000, timeout:15000 }
+  if (!navigator.geolocation) { setGPS('unk','위치 기능 미지원'); setBtnState('far','❌','GPS 미지원','브라우저가 위치를 지원하지 않습니다'); return; }
+  setGPS('unk','위치 확인 중...'); setBtnState('loading','📍','위치 확인 중...','GPS 신호를 받는 중입니다');
+  if (gpsWatch) navigator.geolocation.clearWatch(gpsWatch);
+  gpsWatch = navigator.geolocation.watchPosition(
+    pos=>{ userLat=pos.coords.latitude; userLng=pos.coords.longitude; updateDist(); },
+    ()=>{ setGPS('unk','위치 접근 거부됨'); setBtnState('far','❌','위치 접근 불가','설정에서 위치 권한을 허용해 주세요'); },
+    {enableHighAccuracy:true, maximumAge:10000, timeout:15000}
   );
 }
 
-function refreshGPS() {
-  userLat=null; userLng=null;
-  setGPSUI('unknown','위치 재확인 중...');
-  setBtnState('loading','📍','위치 확인 중...','GPS 신호를 받는 중입니다');
-  if (gpsWatcher) navigator.geolocation.clearWatch(gpsWatcher);
-  startGPS();
+function refreshGPS() { userLat=null; userLng=null; if(gpsWatch)navigator.geolocation.clearWatch(gpsWatch); startGPS(); }
+
+function updateDist() {
+  if (!activeRally||userLat===null) return;
+  const dist=calcDist(userLat,userLng,parseFloat(activeRally.lat),parseFloat(activeRally.lng));
+  const r=parseInt(activeRally.radius);
+  const ds=dist>=1000?(dist/1000).toFixed(1)+'km':Math.round(dist)+'m';
+  const ok=dist<=r;
+  setGPS(ok?'near':'far', ds+' 거리');
+  document.getElementById('gauge-wrap').style.display='block';
+  const pct=Math.min(100,(dist/r)*100);
+  const f=document.getElementById('gfill');
+  f.style.width=(100-pct)+'%'; f.style.background=ok?'#43A047':'var(--red2)';
+  setText('gdist-txt',ds);
+  if (ciDone) return;
+  if (ok) setBtnState('ready','✊','참석 체크인','현장 확인 완료! 탭하여 참석을 기록하세요');
+  else    setBtnState('far','📍','범위 밖입니다','집회 장소까지 '+ds+' — 현장으로 이동 후 체크인하세요');
 }
 
-function updateDistanceUI() {
-  if (!activeRally || userLat===null) return;
-  const dist = calcDist(userLat, userLng, parseFloat(activeRally.lat), parseFloat(activeRally.lng));
-  const radius = parseInt(activeRally.radius);
-  const distStr = dist >= 1000 ? (dist/1000).toFixed(1)+'km' : Math.round(dist)+'m';
-  const inRange = dist <= radius;
-
-  // GPS 바
-  setGPSUI(inRange?'near':'far', distStr+' 거리');
-  document.getElementById('dist-gauge').style.display='block';
-
-  // 게이지 (반경 기준 100%)
-  const pct = Math.min(100, (dist/radius)*100);
-  const fill = document.getElementById('gauge-fill');
-  fill.style.width = (100-pct)+'%';
-  fill.style.background = inRange ? 'var(--green2)' : 'var(--red2)';
-  document.getElementById('gauge-dist-text').textContent = distStr;
-
-  // 버튼
-  if (checkinDone) return;
-  if (inRange) {
-    setBtnState('ready','✊','참석 체크인','현장 확인 완료! 탭하여 참석을 기록하세요');
-  } else {
-    setBtnState('out-of-range','📍','범위 밖입니다',`집회 장소까지 ${distStr} — 반경 ${radius>=1000?(radius/1000)+'km':radius+'m'} 이내에서 체크인 가능합니다`);
-  }
+function setGPS(cls,txt) {
+  const el=document.getElementById('gval');
+  el.textContent=txt; el.className='gval '+cls;
+  document.getElementById('gico').textContent=cls==='near'?'🟢':cls==='far'?'🔴':'📍';
 }
 
-function setGPSUI(state, text) {
-  const val = document.getElementById('gps-value');
-  const icon = document.getElementById('gps-icon');
-  val.textContent = text;
-  val.className = 'gps-value ' + state;
-  icon.textContent = state==='near' ? '🟢' : state==='far' ? '🔴' : '📍';
+function setBtnState(cls,ico,title,sub) {
+  const b=document.getElementById('ci-btn');
+  b.className='chero '+cls;
+  b.querySelector('.chi').textContent=ico;
+  b.querySelector('.cht').textContent=title;
+  b.querySelector('.chs').textContent=sub;
 }
 
-function setBtnState(state, icon, title, sub) {
-  const btn = document.getElementById('ci-btn');
-  btn.className = 'checkin-hero ' + state;
-  btn.querySelector('.ch-icon').textContent = icon;
-  btn.querySelector('.ch-title').textContent = title;
-  btn.querySelector('.ch-sub').textContent = sub;
-}
-
-// 거리 계산 (Haversine)
-function calcDist(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const dLat = (lat2-lat1)*Math.PI/180;
-  const dLng = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(dLat/2)*Math.sin(dLat/2) +
-            Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
-            Math.sin(dLng/2)*Math.sin(dLng/2);
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+function calcDist(la1,ln1,la2,ln2) {
+  const R=6371000,dL=(la2-la1)*Math.PI/180,dN=(ln2-ln1)*Math.PI/180;
+  const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dN/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
 async function doCheckin() {
-  if (checkinDone) return;
-  const btn = document.getElementById('ci-btn');
-  if (btn.classList.contains('loading') || btn.classList.contains('out-of-range')) return;
-  if (!activeRally) { showToast('ci-toast','err','진행 중인 집회가 없습니다.'); return; }
-  if (userLat===null) { showToast('ci-toast','err','위치를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.'); return; }
-
-  const dist = calcDist(userLat, userLng, parseFloat(activeRally.lat), parseFloat(activeRally.lng));
-  if (dist > parseInt(activeRally.radius)) {
-    showToast('ci-toast','err','집회 장소 반경 밖입니다. 현장으로 이동 후 다시 시도하세요.'); return;
-  }
-
-  setBtnState('loading','⏳','기록 중...','Google Sheets에 참석을 기록하고 있습니다');
-  showToast('ci-toast','loading','⏳ Google Sheets에 기록 중...');
-
+  if (ciDone) return;
+  const b=document.getElementById('ci-btn');
+  if (b.classList.contains('loading')||b.classList.contains('far')) return;
+  if (!activeRally||userLat===null) { showToast('ci-toast','err','위치를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.'); return; }
+  const dist=calcDist(userLat,userLng,parseFloat(activeRally.lat),parseFloat(activeRally.lng));
+  if (dist>parseInt(activeRally.radius)) { showToast('ci-toast','err','집회 장소 반경 밖입니다. 현장으로 이동 후 다시 시도하세요.'); return; }
+  setBtnState('loading','⏳','기록 중...','Google Sheets에 기록하고 있습니다');
+  showToast('ci-toast','loading','⏳ 기록 중...');
   try {
-    const r = await api('checkin', {
-      ...profile,
-      jiboo: profile.jiboo||'',
-      eventName: activeRally.eventName,
-      lat: userLat.toFixed(6),
-      lng: userLng.toFixed(6),
-      distance: Math.round(dist),
-      deviceId: getDeviceId()
-    });
+    const r=await api('checkin',{...profile, eventName:activeRally.eventName, lat:userLat.toFixed(6), lng:userLng.toFixed(6), distance:Math.round(dist), deviceId:getDeviceId()});
     if (r.dup) {
-      showToast('ci-toast','info','⚠️ 이 기기에서 이미 체크인되었습니다.
-1기기 1회만 가능합니다.');
+      showToast('ci-toast','info','⚠️ 이 기기에서 이미 체크인되었습니다. 1기기 1회만 가능합니다.');
       setBtnState('done','✅','이미 체크인됨','이 기기는 이미 참석 처리되었습니다');
-      checkinDone=true;
+      ciDone=true;
     } else if (r.ok) {
-      checkinDone=true;
-      setBtnState('done','✅','참석 완료!','');
+      ciDone=true; setBtnState('done','✅','참석 완료!','');
       showToast('ci-toast','ok','');
-      showSuccess(profile.name, profile.branch, activeRally.eventName);
+      showSov(profile.name,profile.jiboo+' '+profile.branch,activeRally.eventName);
       loadMyHistory();
       if (navigator.vibrate) navigator.vibrate([100,50,200]);
     } else throw new Error(r.msg);
   } catch(e) {
-    showToast('ci-toast','err', e.message==='NO_URL'?'서버 URL이 설정되지 않았습니다':'❌ 오류: '+e.message);
+    showToast('ci-toast','err','❌ 오류: '+e.message);
     setBtnState('ready','✊','다시 시도','탭하여 참석을 기록하세요');
   }
 }
 
-function showSuccess(name, branch, eventName) {
-  const now = new Date();
-  document.getElementById('so-name').textContent  = name + ' 조합원';
-  document.getElementById('so-branch').textContent = branch;
-  document.getElementById('so-event').textContent = eventName;
-  document.getElementById('so-time').textContent  =
-    now.toLocaleDateString('ko-KR')+' '+now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('success-overlay').classList.add('show');
+function showSov(name,branch,event) {
+  const now=new Date();
+  setText('sov-name',name+' 조합원');
+  setText('sov-branch',branch);
+  setText('sov-event',event);
+  setText('sov-time',now.toLocaleDateString('ko-KR')+' '+now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
+  document.getElementById('sov').classList.add('on');
 }
-function closeSuccess() { document.getElementById('success-overlay').classList.remove('show'); }
+function closeSov() { document.getElementById('sov').classList.remove('on'); }
 
 async function loadMyHistory() {
-  if (!profile||!SCRIPT_URL) return;
+  if (!profile) return;
+  const ul=document.getElementById('my-history');
   try {
-    const r = await api('getAttendees',{empno:profile.empno});
-    const mine = (r.attendees||[]).slice(0,8);
-    const ul = document.getElementById('my-history');
+    const r=await api('getAttendees',{empno:profile.empno});
+    const mine=(r.attendees||[]).slice(0,8);
     if (!mine.length) { ul.innerHTML='<div class="empty"><div class="ei">📭</div><p>아직 참석 기록이 없습니다</p></div>'; return; }
-    ul.innerHTML = mine.map(a=>`
-      <li class="a-item">
-        <div>
-          <div class="a-name">${a.eventName}</div>
-          <div class="a-meta">${a.dateStr} ${a.timeStr}</div>
-          ${a.distance?`<div class="a-meta">📍 ${a.distance}m 거리에서 체크인</div>`:''}
-        </div>
-        <div class="a-time">✅</div>
-      </li>`).join('');
+    ul.innerHTML=mine.map(a=>`<li class="aitem"><div><div class="aname">${a.eventName}</div><div class="ameta">${a.dateStr} ${a.timeStr}</div>${a.distance?`<div class="ameta">📍 ${a.distance}m</div>`:''}</div><div class="atime">✅</div></li>`).join('');
   } catch {}
 }
 
-// ═══════════════════════════
+// ══════════════════════════════
 //  ADMIN
-// ═══════════════════════════
-// 장소 설정 방식 전환
-function setLocMethod(method) {
-  document.getElementById('loc-gps').style.display = method==='gps' ? 'block' : 'none';
-  document.getElementById('loc-map').style.display = method==='map' ? 'block' : 'none';
-  const gpsBtn = document.getElementById('method-gps');
-  const mapBtn = document.getElementById('method-map');
-  if (method==='gps') {
-    gpsBtn.style.background='var(--red)'; gpsBtn.style.borderColor='var(--red)'; gpsBtn.style.color='white';
-    mapBtn.style.background='var(--surface3)'; mapBtn.style.borderColor='var(--border2)'; mapBtn.style.color='var(--muted)';
-  } else {
-    mapBtn.style.background='var(--red)'; mapBtn.style.borderColor='var(--red)'; mapBtn.style.color='white';
-    gpsBtn.style.background='var(--surface3)'; gpsBtn.style.borderColor='var(--border2)'; gpsBtn.style.color='var(--muted)';
-  }
+// ══════════════════════════════
+function adminLogin() {
+  if (document.getElementById('adm-pw').value===ADMIN_PW) {
+    hide('adm-lock'); show('adm-dash');
+    loadEvents(); loadRally(); renderAdmEventSel(); renderEventPills();
+    renderJibooList(); renderBranchList(); checkConn(); loadStats();
+  } else { showToast('adm-pw-msg','err','비밀번호가 틀렸습니다.'); document.getElementById('adm-pw').value=''; }
+}
+function adminLogout() { hide('adm-dash'); show('adm-lock'); document.getElementById('adm-pw').value=''; }
+
+// 집회 장소 탭
+function setLocTab(t) {
+  document.getElementById('lt-gps').classList.toggle('on',t==='gps');
+  document.getElementById('lt-map').classList.toggle('on',t==='map');
+  document.getElementById('loc-gps').style.display=t==='gps'?'block':'none';
+  document.getElementById('loc-map').style.display=t==='map'?'block':'none';
 }
 
-// 주소 검색 (Nominatim 무료 API)
-async function searchAddress() {
-  const q = document.getElementById('addr-search').value.trim();
-  const res = document.getElementById('addr-results');
+async function setRallyGPS() {
+  const en=document.getElementById('adm-event-sel').value;
+  const loc=v('rally-loc'); const rad=document.getElementById('rally-radius').value;
+  if (!en) { showToast('rally-toast','err','집회를 선택해 주세요.'); return; }
+  if (!loc){ showToast('rally-toast','err','장소명을 입력해 주세요.'); return; }
+  if (!navigator.geolocation) { showToast('rally-toast','err','위치 기능을 사용할 수 없습니다.'); return; }
+  showToast('rally-toast','loading','📍 현재 위치 확인 중...');
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    await saveRally(en,loc,pos.coords.latitude,pos.coords.longitude,parseInt(rad));
+  },()=>showToast('rally-toast','err','위치 접근이 거부되었습니다.'),{enableHighAccuracy:true,timeout:10000});
+}
+
+async function searchAddr() {
+  const q=v('addr-inp');
+  const res=document.getElementById('addr-results');
   if (!q) return;
-  res.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:8px 0">검색 중...</div>';
+  res.innerHTML='<div style="font-size:13px;color:var(--muted);padding:8px 0">검색 중...</div>';
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q+' 부산')}&format=json&limit=5&accept-language=ko`);
-    const data = await r.json();
-    if (!data.length) { res.innerHTML='<div style="font-size:13px;color:#EF9A9A;padding:8px 0">검색 결과가 없습니다. 더 구체적인 주소로 검색해 보세요.</div>'; return; }
-    res.innerHTML = data.map(d => `
-      <div onclick="selectAddr('${d.lat}','${d.lon}','${d.display_name.replace(/'/g,'\'')}')"
-        style="padding:10px 12px; background:var(--surface3); border:1px solid var(--border2); border-radius:8px; margin-bottom:6px; cursor:pointer; font-size:13px; line-height:1.5">
-        <div style="font-weight:700; color:white; margin-bottom:2px">${d.display_name.split(',')[0]}</div>
-        <div style="color:var(--muted); font-size:11px; font-family:'IBM Plex Mono',monospace">${parseFloat(d.lat).toFixed(5)}, ${parseFloat(d.lon).toFixed(5)}</div>
-      </div>`).join('');
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q+' 부산')}&format=json&limit=5&accept-language=ko`);
+    const data=await r.json();
+    if (!data.length) { res.innerHTML='<div style="font-size:13px;color:#EF9A9A;padding:8px 0">검색 결과가 없습니다.</div>'; return; }
+    res.innerHTML=data.map(d=>`<div onclick="pickAddr('${d.lat}','${d.lon}','${d.display_name.replace(/'/g,"\\'")}') " style="padding:10px 12px;background:var(--s3);border:1px solid var(--b2);border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:13px;line-height:1.5"><div style="font-weight:700;color:white;margin-bottom:2px">${d.display_name.split(',')[0]}</div><div style="color:var(--muted);font-size:11px;font-family:'IBM Plex Mono',monospace">${parseFloat(d.lat).toFixed(5)}, ${parseFloat(d.lon).toFixed(5)}</div></div>`).join('');
   } catch { res.innerHTML='<div style="font-size:13px;color:#EF9A9A;padding:8px 0">검색 실패. 좌표를 직접 입력해 주세요.</div>'; }
 }
 
-async function selectAddr(lat, lng, name) {
-  const eventName = document.getElementById('admin-event-sel').value;
-  const locName   = document.getElementById('rally-loc-name').value.trim() || name.split(',')[0];
-  const radius    = document.getElementById('rally-radius').value;
-  if (!eventName) { showToast('rally-toast','err','집회를 먼저 선택해 주세요.'); return; }
-  showToast('rally-toast','loading','⏳ 집회 장소 등록 중...');
-  try {
-    const r = await api('setActiveRally',{eventName, locName, lat:parseFloat(lat), lng:parseFloat(lng), radius:parseInt(radius)});
-    if (r.ok) {
-      activeRally={eventName,locName,lat:parseFloat(lat),lng:parseFloat(lng),radius:parseInt(radius)};
-      LS('union_active_rally',activeRally);
-      showToast('rally-toast','ok',`✅ "${eventName}" 집회가 활성화되었습니다!`);
-      renderActiveRallyInfo();
-      document.getElementById('addr-results').innerHTML='';
-    }
-  } catch(e) { showToast('rally-toast','err','❌ 설정 실패: '+e.message); }
+async function pickAddr(lat,lng,name) {
+  const en=document.getElementById('adm-event-sel').value;
+  const loc=v('rally-loc')||name.split(',')[0];
+  const rad=document.getElementById('rally-radius').value;
+  if (!en) { showToast('rally-toast','err','집회를 먼저 선택해 주세요.'); return; }
+  await saveRally(en,loc,parseFloat(lat),parseFloat(lng),parseInt(rad));
+  document.getElementById('addr-results').innerHTML='';
 }
 
 async function setRallyManual() {
-  const lat = parseFloat(document.getElementById('manual-lat').value);
-  const lng = parseFloat(document.getElementById('manual-lng').value);
-  const eventName = document.getElementById('admin-event-sel').value;
-  const locName   = document.getElementById('rally-loc-name').value.trim();
-  const radius    = document.getElementById('rally-radius').value;
-  if (!eventName) { showToast('rally-toast','err','집회를 먼저 선택해 주세요.'); return; }
-  if (!locName)   { showToast('rally-toast','err','장소명을 입력해 주세요.'); return; }
+  const lat=parseFloat(v('mlat')), lng=parseFloat(v('mlng'));
+  const en=document.getElementById('adm-event-sel').value;
+  const loc=v('rally-loc'); const rad=document.getElementById('rally-radius').value;
+  if (!en)       { showToast('rally-toast','err','집회를 선택해 주세요.'); return; }
+  if (!loc)      { showToast('rally-toast','err','장소명을 입력해 주세요.'); return; }
   if (isNaN(lat)||isNaN(lng)) { showToast('rally-toast','err','올바른 좌표를 입력해 주세요.'); return; }
+  await saveRally(en,loc,lat,lng,parseInt(rad));
+}
+
+async function saveRally(en,loc,lat,lng,rad) {
   showToast('rally-toast','loading','⏳ 집회 장소 등록 중...');
   try {
-    const r = await api('setActiveRally',{eventName,locName,lat,lng,radius:parseInt(radius)});
+    const r=await api('setActiveRally',{eventName:en,locName:loc,lat,lng,radius:rad});
     if (r.ok) {
-      activeRally={eventName,locName,lat,lng,radius:parseInt(radius)};
-      LS('union_active_rally',activeRally);
-      showToast('rally-toast','ok',`✅ "${eventName}" 집회가 활성화되었습니다!`);
-      renderActiveRallyInfo();
+      activeRally={eventName:en,locName:loc,lat,lng,radius:rad};
+      LS('union_rally',activeRally);
+      showToast('rally-toast','ok','✅ "'+en+'" 집회가 활성화되었습니다!');
+      renderActiveInfo();
     }
-  } catch(e) { showToast('rally-toast','err','❌ 설정 실패: '+e.message); }
+  } catch(e) { showToast('rally-toast','err','❌ 실패: '+e.message); }
 }
 
-function adminLogin() {
-  if (document.getElementById('admin-pw').value===ADMIN_PW) {
-    document.getElementById('admin-lock').style.display='none';
-    document.getElementById('admin-dash').style.display='block';
-    loadEvents(); renderAdminEventSelect(); renderEventPills(); renderJibooList(); renderBranchList(); updateStats();
-    loadActiveRally();
-  } else {
-    showToast('admin-pw-msg','err','비밀번호가 틀렸습니다.');
-    document.getElementById('admin-pw').value='';
-  }
-}
-function adminLogout() {
-  document.getElementById('admin-dash').style.display='none';
-  document.getElementById('admin-lock').style.display='block';
-  document.getElementById('admin-pw').value='';
+async function clearRally() {
+  if (!confirm('집회를 종료할까요? 이후 조합원 체크인이 불가능합니다.')) return;
+  try { await api('clearRally',{}); activeRally=null; LS('union_rally',null); renderActiveInfo(); showToast('rally-toast','info','집회가 종료되었습니다.'); } catch {}
 }
 
-// 집회 위치 설정
-async function setRallyLocation() {
-  const eventName = document.getElementById('admin-event-sel').value;
-  const locName   = document.getElementById('rally-loc-name').value.trim();
-  const radius    = document.getElementById('rally-radius').value;
-  if (!eventName) { showToast('rally-toast','err','집회를 선택해 주세요.'); return; }
-  if (!locName)   { showToast('rally-toast','err','장소명을 입력해 주세요.'); return; }
-  if (!navigator.geolocation) { showToast('rally-toast','err','위치 기능을 사용할 수 없습니다.'); return; }
-
-  showToast('rally-toast','loading','📍 현재 위치 확인 중...');
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
-    try {
-      const r = await api('setActiveRally',{eventName,locName,lat,lng,radius:parseInt(radius)});
-      if (r.ok) {
-        activeRally = {eventName,locName,lat,lng,radius:parseInt(radius)};
-        LS('union_active_rally',activeRally);
-        showToast('rally-toast','ok',`✅ "${eventName}" 집회가 활성화되었습니다!\n위도: ${lat.toFixed(4)}, 경도: ${lng.toFixed(4)}`);
-        renderActiveRallyInfo();
-      }
-    } catch(e) { showToast('rally-toast','err','❌ 설정 실패: '+e.message); }
-  }, ()=>{ showToast('rally-toast','err','위치 접근이 거부되었습니다.'); }, {enableHighAccuracy:true,timeout:10000});
-}
-
-async function clearActiveRally() {
-  if (!confirm('집회를 종료하면 조합원들이 더 이상 체크인할 수 없습니다. 종료할까요?')) return;
+async function loadRally() {
   try {
-    await api('clearRally',{});
-    activeRally=null; LS('union_active_rally',null);
-    renderActiveRallyInfo();
-    showToast('rally-toast','info','집회가 종료되었습니다.');
-  } catch(e) { showToast('rally-toast','err','오류: '+e.message); }
-}
-
-async function loadActiveRally() {
-  if (!SCRIPT_URL) return;
-  try {
-    const r = await api('getActiveRally',{});
-    if (r.ok && r.rally) {
-      activeRally = r.rally;
-      LS('union_active_rally',activeRally);
-    } else {
-      activeRally=null;
-      LS('union_active_rally',null);
-    }
-    renderActiveRallyInfo();
+    const r=await api('getActiveRally',{});
+    if (r.ok&&r.rally) { activeRally=r.rally; LS('union_rally',activeRally); }
+    else { activeRally=null; LS('union_rally',null); }
+    renderActiveInfo();
   } catch {}
 }
 
-function renderActiveRallyInfo() {
-  const info = document.getElementById('active-rally-info');
+function renderActiveInfo() {
+  const el=document.getElementById('active-info');
+  if (!el) return;
   if (activeRally) {
-    document.getElementById('active-name').textContent  = activeRally.eventName;
-    document.getElementById('active-loc').textContent   = '📍 '+activeRally.locName;
-    const r = parseInt(activeRally.radius);
-    document.getElementById('active-coords').textContent = `반경 ${r>=1000?(r/1000)+'km':r+'m'} | ${parseFloat(activeRally.lat).toFixed(4)}, ${parseFloat(activeRally.lng).toFixed(4)}`;
-    info.style.display='block';
-  } else {
-    info.style.display='none';
-  }
+    setText('ai-name',activeRally.eventName);
+    setText('ai-loc','📍 '+activeRally.locName);
+    const r=parseInt(activeRally.radius);
+    setText('ai-coords','반경 '+(r>=1000?(r/1000)+'km':r+'m')+' | '+parseFloat(activeRally.lat).toFixed(4)+', '+parseFloat(activeRally.lng).toFixed(4));
+    el.style.display='block';
+  } else { el.style.display='none'; }
 }
 
-// ═══════════════════════════
-//  EVENTS
-// ═══════════════════════════
-async function loadEvents() {
-  if (!SCRIPT_URL) return;
+// STATS
+async function loadStats() {
   try {
-    const r = await api('getEvents');
-    if (r.ok) { events=r.events; LS('union_events',events); renderEventPills(); renderAdminEventSelect(); }
+    const r=await api('getAttendees',{});
+    allAttendees=r.attendees||[];
+    const today=new Date().toISOString().slice(0,10);
+    setText('st-total',allAttendees.length);
+    setText('st-today',allAttendees.filter(a=>(a.dateStr||'').replace(/\./g,'-')===today).length);
+    setText('st-branch',new Set(allAttendees.map(a=>a.branch)).size);
   } catch {}
 }
 
-function renderAdminEventSelect() {
-  ['admin-event-sel','export-event-sel'].forEach(id => {
-    const sel=document.getElementById(id);
-    if (!sel) return;
-    const cur=sel.value;
-    sel.innerHTML='<option value="">-- 전체 --</option>';
-    events.forEach(e=>{ const o=document.createElement('option'); o.value=e; o.textContent=e; sel.appendChild(o); });
-    if (id==='admin-event-sel' && activeRally) sel.value=activeRally.eventName;
-    else if (cur) sel.value=cur;
+// CSV
+async function doExport(byEvent=false) {
+  showToast('exp-toast','loading','⏳ 데이터 불러오는 중...');
+  try {
+    const r=await api('getAttendees',{});
+    allAttendees=r.attendees||[];
+    let data=allAttendees;
+    if (byEvent) { const sel=document.getElementById('exp-event').value; if(sel) data=allAttendees.filter(a=>a.eventName===sel); }
+    if (!data.length) { showToast('exp-toast','info','데이터가 없습니다.'); return; }
+    const h=['이름','사번','소속','지부','지회','집회명','날짜','시간','거리(m)'];
+    const rows=data.map(a=>[a.name,a.empno,a.dept,a.jiboo||'',a.branch,a.eventName,a.dateStr,a.timeStr,a.distance||'']);
+    const csv=[h,...rows].map(r=>r.map(v=>`"${v||''}"`).join(',')).join('\n');
+    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=`집회참석자_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'-')}.csv`; a.click();
+    showToast('exp-toast','ok','✅ '+data.length+'명 데이터를 다운로드했습니다.');
+  } catch(e) { showToast('exp-toast','err','❌ 실패: '+e.message); }
+}
+
+// ══════════════════════════════
+//  EVENTS
+// ══════════════════════════════
+async function loadEvents() {
+  try {
+    const r=await api('getEvents');
+    if (r.ok) { events=r.events; LS('union_events',events); renderEventPills(); renderAdmEventSel(); }
+  } catch {}
+}
+
+function renderAdmEventSel() {
+  ['adm-event-sel','exp-event'].forEach(id=>{
+    const s=document.getElementById(id); if(!s) return;
+    const c=s.value; s.innerHTML='<option value="">-- 전체 --</option>';
+    events.forEach(e=>{ const o=document.createElement('option'); o.value=e; o.textContent=e; s.appendChild(o); });
+    if(c) s.value=c;
   });
 }
 
 function renderEventPills() {
-  const wrap = document.getElementById('event-pill-list');
-  if (!wrap) return;
-  wrap.innerHTML = events.length ? events.map((e,i)=>`
-    <span class="pill">${e}<button onclick="removeEvent(${i})">✕</button></span>`).join('')
-    : '<span style="font-size:13px;color:var(--muted)">등록된 집회가 없습니다</span>';
+  const w=document.getElementById('event-pills'); if(!w) return;
+  w.innerHTML=events.length ? events.map((e,i)=>`<span class="pill">${e}<button onclick="removeEvent(${i})">✕</button></span>`).join('') : '<span style="font-size:13px;color:var(--muted)">등록된 집회가 없습니다</span>';
 }
 
 async function addEvent() {
-  const val=document.getElementById('new-event-inp').value.trim();
-  if (!val||events.includes(val)) return;
+  const val=v('new-event-inp'); if(!val||events.includes(val)) return;
   events.push(val); LS('union_events',events);
-  renderEventPills(); renderAdminEventSelect();
+  renderEventPills(); renderAdmEventSel();
   document.getElementById('new-event-inp').value='';
-  if (SCRIPT_URL) { try { await api('addEvent',{name:val}); } catch {} }
+  try { await api('addEvent',{name:val}); } catch {}
 }
 
 async function removeEvent(i) {
   const name=events[i]; events.splice(i,1); LS('union_events',events);
-  renderEventPills(); renderAdminEventSelect();
-  if (SCRIPT_URL) { try { await api('removeEvent',{name}); } catch {} }
+  renderEventPills(); renderAdmEventSel();
+  try { await api('removeEvent',{name}); } catch {}
 }
 
-// ═══════════════════════════
-//  ATTENDEES
-// ═══════════════════════════
-async function loadAttendees() {
-  try {
-    const r=await api('getAttendees',{});
-    allAttendees=r.attendees||[]; updateStats();
-  } catch {}
-}
-
-function updateStats() {
-  const today=new Date().toISOString().slice(0,10);
-  document.getElementById('st-total').textContent  = allAttendees.length;
-  document.getElementById('st-today').textContent  = allAttendees.filter(a=>(a.dateStr||'').replace(/\./g,'-')===today).length;
-  document.getElementById('st-branch').textContent = new Set(allAttendees.map(a=>a.branch)).size;
-}
-
-function exportCSV(data) {
-  const h=['이름','사번','소속','지부','지회','집회명','날짜','시간','거리(m)'];
-  const rows=(data||allAttendees).map(a=>[a.name,a.empno,a.dept,a.jiboo||'',a.branch,a.eventName,a.dateStr,a.timeStr,a.distance||'']);
-  const csv=[h,...rows].map(r=>r.map(v=>`"${v||''}"`).join(',')).join('\n');
-  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download=`집회참석자_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'-')}.csv`;
-  a.click();
-}
-
-async function loadAndExportCSV(byEvent=false) {
-  const toast = document.getElementById('export-toast');
-  showToast('export-toast','loading','⏳ 데이터 불러오는 중...');
-  try {
-    const r = await api('getAttendees',{});
-    allAttendees = r.attendees||[];
-    let data = allAttendees;
-    if (byEvent) {
-      const sel = document.getElementById('export-event-sel').value;
-      if (sel) data = allAttendees.filter(a=>a.eventName===sel);
-    }
-    if (!data.length) { showToast('export-toast','info','참석자 데이터가 없습니다.'); return; }
-    exportCSV(data);
-    showToast('export-toast','ok',`✅ ${data.length}명 데이터를 다운로드했습니다.`);
-    updateStats();
-  } catch(e) {
-    showToast('export-toast','err','❌ 실패: '+e.message);
-  }
-}
-
-// ═══════════════════════════
-//  BRANCHES
-// ═══════════════════════════
+// ══════════════════════════════
+//  BRANCHES / JIBOOS
+// ══════════════════════════════
 async function loadBranches() {
-  try {
-    const r=await api('getBranches');
-    if (r.ok&&r.branches.length) { branches=r.branches; LS('union_branches',branches); renderBranchSelect(); renderBranchList(); }
-  } catch {}
+  try { const r=await api('getBranches'); if(r.ok&&r.branches.length){branches=r.branches;LS('union_branches',branches);renderBranchSel();renderBranchList();} } catch {}
 }
-
 async function loadJiboos() {
-  try {
-    const r=await api('getJiboo');
-    if (r.ok&&r.jiboos.length) { jiboos=r.jiboos; localStorage.setItem('union_jiboos',JSON.stringify(jiboos)); renderJibooSelect(); renderJibooList(); }
-  } catch {}
+  try { const r=await api('getJiboo'); if(r.ok&&r.jiboos.length){jiboos=r.jiboos;LS('union_jiboos',jiboos);renderJibooSel();renderJibooList();} } catch {}
 }
 
-function renderJibooSelect() {
-  const sel=document.getElementById('inp-jiboo');
-  if (!sel) return;
-  const cur=profile?.jiboo||'';
-  sel.innerHTML='<option value="">-- 지부 선택 --</option>';
-  jiboos.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o); });
-  if (cur) sel.value=cur;
+function renderBranchSel() {
+  const s=document.getElementById('inp-branch'); if(!s) return;
+  const c=profile?.branch||''; s.innerHTML='<option value="">-- 지회 선택 --</option>';
+  branches.forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;s.appendChild(o);}); if(c) s.value=c;
 }
-
-function renderJibooList() {
-  const ul=document.getElementById('jiboo-list');
-  if (!ul) return;
-  ul.innerHTML=jiboos.map((b,i)=>`
-    <li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px">
-      <span>${b}</span>
-      <button onclick="removeJibooUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>
-    </li>`).join('');
-}
-
-async function addJibooUI() {
-  const val=document.getElementById('new-jiboo-inp').value.trim();
-  if (!val||jiboos.includes(val)) return;
-  jiboos.push(val); localStorage.setItem('union_jiboos',JSON.stringify(jiboos));
-  renderJibooSelect(); renderJibooList();
-  document.getElementById('new-jiboo-inp').value='';
-  if (SCRIPT_URL) { try { await api('addJiboo',{name:val}); } catch {} }
-}
-
-async function removeJibooUI(i) {
-  const name=jiboos[i]; jiboos.splice(i,1); localStorage.setItem('union_jiboos',JSON.stringify(jiboos));
-  renderJibooSelect(); renderJibooList();
-  if (SCRIPT_URL) { try { await api('removeJiboo',{name}); } catch {} }
-}
-
-function renderBranchSelect() {
-  const sel=document.getElementById('inp-branch');
-  const cur=profile?.branch||'';
-  sel.innerHTML='<option value="">-- 지회 선택 --</option>';
-  branches.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o); });
-  if (cur) sel.value=cur;
+function renderJibooSel() {
+  const s=document.getElementById('inp-jiboo'); if(!s) return;
+  const c=profile?.jiboo||''; s.innerHTML='<option value="">-- 지부 선택 --</option>';
+  jiboos.forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;s.appendChild(o);}); if(c) s.value=c;
 }
 
 function renderBranchList() {
-  document.getElementById('branch-list').innerHTML=branches.map((b,i)=>`
-    <li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px">
-      <span>${b}</span>
-      <button onclick="removeBranchUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>
-    </li>`).join('');
+  const ul=document.getElementById('branch-list'); if(!ul) return;
+  ul.innerHTML=branches.map((b,i)=>`<li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1);font-size:14px"><span>${b}</span><button onclick="removeBranchUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button></li>`).join('');
+}
+function renderJibooList() {
+  const ul=document.getElementById('jiboo-list'); if(!ul) return;
+  ul.innerHTML=jiboos.map((b,i)=>`<li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1);font-size:14px"><span>${b}</span><button onclick="removeJibooUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button></li>`).join('');
 }
 
-async function addBranch() {
-  const val=document.getElementById('new-branch-inp').value.trim();
-  if (!val||branches.includes(val)) return;
-  branches.push(val); LS('union_branches',branches);
-  renderBranchSelect(); renderBranchList();
+async function addBranchUI() {
+  const val=v('new-branch-inp'); if(!val||branches.includes(val)) return;
+  branches.push(val); LS('union_branches',branches); renderBranchSel(); renderBranchList();
   document.getElementById('new-branch-inp').value='';
-  if (SCRIPT_URL) { try { await api('addBranch',{name:val}); } catch {} }
+  try { await api('addBranch',{name:val}); } catch {}
 }
-
 async function removeBranchUI(i) {
-  const name=branches[i]; branches.splice(i,1); LS('union_branches',branches);
-  renderBranchSelect(); renderBranchList();
-  if (SCRIPT_URL) { try { await api('removeBranch',{name}); } catch {} }
+  const name=branches[i]; branches.splice(i,1); LS('union_branches',branches); renderBranchSel(); renderBranchList();
+  try { await api('removeBranch',{name}); } catch {}
+}
+async function addJibooUI() {
+  const val=v('new-jiboo-inp'); if(!val||jiboos.includes(val)) return;
+  jiboos.push(val); LS('union_jiboos',jiboos); renderJibooSel(); renderJibooList();
+  document.getElementById('new-jiboo-inp').value='';
+  try { await api('addJiboo',{name:val}); } catch {}
+}
+async function removeJibooUI(i) {
+  const name=jiboos[i]; jiboos.splice(i,1); LS('union_jiboos',jiboos); renderJibooSel(); renderJibooList();
+  try { await api('removeJiboo',{name}); } catch {}
 }
 
-// ═══════════════════════════
+// ══════════════════════════════
 //  SETTING
-// ═══════════════════════════
+// ══════════════════════════════
 function saveUrl() {
-  const url=document.getElementById('url-inp').value.trim();
+  const url=v('url-inp');
   if (!url.startsWith('https://script.google.com')) { showToast('url-toast','err','올바른 Apps Script URL이 아닙니다.'); return; }
-  SCRIPT_URL=url; localStorage.setItem('ucfg_url',url);
+  localStorage.setItem('ucfg_url',url);
   showToast('url-toast','ok','✅ 저장되었습니다. 연결 테스트를 해보세요.');
 }
-
 async function testConn() {
   showToast('url-toast','loading','🔗 연결 테스트 중...');
-  try {
-    const r=await api('ping');
-    if (r.ok) { showToast('url-toast','ok','✅ 연결 성공!'); checkConn(); loadBranches(); loadEvents(); loadActiveRally(); }
-    else throw new Error();
-  } catch { showToast('url-toast','err','❌ 연결 실패. URL 확인 또는 배포 설정을 확인해 주세요.'); }
+  try { const r=await api('ping'); if(r.ok){showToast('url-toast','ok','✅ 연결 성공!');checkConn();loadBranches();loadJiboos();loadEvents();}else throw new Error(); }
+  catch { showToast('url-toast','err','❌ 연결 실패. URL 확인 또는 배포 설정을 확인해 주세요.'); }
 }
 
 async function checkConn() {
-  const setUI=(cls,msg)=>{
-    ['cdot','cdot2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='cdot '+cls;});
-    ['ctxt','ctxt2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=msg;});
+  const set=(cls,msg)=>{
+    ['cdot','cdot2','cdot3'].forEach(id=>{const e=document.getElementById(id);if(e)e.className='cdot '+cls;});
+    ['ctxt','ctxt2','ctxt3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=msg;});
   };
-  if (!SCRIPT_URL) { setUI('err','URL 미설정'); return; }
-  setUI('ing','확인 중...');
-  try { const r=await api('ping'); r.ok?setUI('ok','Sheets 연결됨'):setUI('err','연결 오류'); }
-  catch { setUI('err','연결 실패'); }
+  set('ing','확인 중...');
+  try { const r=await api('ping'); r.ok?set('ok','Sheets 연결됨'):set('err','연결 오류'); }
+  catch { set('err','연결 실패'); }
 }
 
 function changePw() {
-  const cur=document.getElementById('pw-cur').value;
-  const nw=document.getElementById('pw-new').value;
-  const con=document.getElementById('pw-con').value;
-  if (cur!==ADMIN_PW) { showToast('pw-toast','err','현재 비밀번호가 틀렸습니다.'); return; }
-  if (nw.length<4)    { showToast('pw-toast','err','4자 이상 입력해 주세요.'); return; }
-  if (nw!==con)       { showToast('pw-toast','err','새 비밀번호가 일치하지 않습니다.'); return; }
+  const cur=v('pw-cur'),nw=v('pw-new'),con=v('pw-con');
+  if(cur!==ADMIN_PW){showToast('pw-toast','err','현재 비밀번호가 틀렸습니다.');return;}
+  if(nw.length<4){showToast('pw-toast','err','4자 이상 입력해 주세요.');return;}
+  if(nw!==con){showToast('pw-toast','err','새 비밀번호가 일치하지 않습니다.');return;}
   ADMIN_PW=nw; localStorage.setItem('ucfg_pw',nw);
   showToast('pw-toast','ok','✅ 비밀번호가 변경되었습니다.');
   ['pw-cur','pw-new','pw-con'].forEach(id=>document.getElementById(id).value='');
 }
 
 function copyCode(btn) {
-  navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>{
+  navigator.clipboard.writeText(ASC).then(()=>{
     btn.textContent='✅ 복사 완료! Apps Script에 붙여넣기 하세요.';
     setTimeout(()=>{btn.textContent='📋 탭하면 코드가 복사됩니다';},2500);
-  }).catch(()=>{ prompt('코드를 복사하세요:',APPS_SCRIPT_CODE); });
+  }).catch(()=>{ prompt('코드를 복사하세요:',ASC); });
 }
 
-// ═══════════════════════════
-//  UTIL
-// ═══════════════════════════
-function showToast(id, type, msg) {
-  const el=document.getElementById(id);
-  if (!el) return;
-  el.textContent=msg; el.className='toast '+type; el.style.display='block';
-}
+// ══════════════════════════════
+//  UTILS
+// ══════════════════════════════
+function show(id){const e=document.getElementById(id);if(e)e.style.display='block';}
+function hide(id){const e=document.getElementById(id);if(e)e.style.display='none';}
+function setText(id,txt){const e=document.getElementById(id);if(e)e.textContent=txt;}
+function set(id,val){const e=document.getElementById(id);if(e)e.value=val;}
+function v(id){const e=document.getElementById(id);return e?(e.value||'').trim():'';}
+function showToast(id,type,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.className='toast '+type;e.style.display='block';}
 </script>
 </body>
 </html>
