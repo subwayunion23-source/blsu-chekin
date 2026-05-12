@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>부산지하철노동조합 집회 체크인</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+:root {
+  --red: #C62828;
+  --red2: #E53935;
+  --red-dim: rgba(198,40,40,0.12);
+  --black: #0D0D0D;
+  --surface: #161616;
+  --surface2: #1F1F1F;
+  --surface3: #282828;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --white: #F5F5F5;
+  --muted: rgba(255,255,255,0.45);
+  --green: #2E7D32;
+  --green2: #43A047;
+  --green-bg: rgba(46,125,50,0.12);
+  --yellow: #F59E0B;
+  --yellow-bg: rgba(245,158,11,0.1);
+  --blue: #1565C0;
+  --blue-bg: rgba(21,101,192,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: var(--black); color: var(--white); overflow-x: hidden; }
+
+/* HEADER */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(13,13,13,0.94); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 13px 18px; display: flex; align-items: center; justify-content: space-between;
+}
+.header-logo { display: flex; align-items: center; gap: 10px; }
+.header-fist { width: 34px; height: 34px; background: var(--red); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+.header-title { font-size: 15px; font-weight: 900; letter-spacing: -0.3px; }
+.header-sub { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+.conn-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 4px 10px;
+  font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+}
+.cdot { width: 7px; height: 7px; border-radius: 50%; background: #444; }
+.cdot.ok { background: #4CAF50; box-shadow: 0 0 5px #4CAF50; }
+.cdot.err { background: var(--red2); }
+.cdot.ing { background: var(--yellow); animation: blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* BOTTOM NAV */
+.bnav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(13,13,13,0.96); backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border); display: flex;
+}
+.nbtn {
+  flex: 1; padding: 11px 4px 15px; background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: var(--muted); font-family: 'Noto Sans KR', sans-serif;
+  font-size: 10px; font-weight: 500; transition: color 0.2s; position: relative;
+}
+.nbtn .ni { font-size: 21px; line-height: 1; }
+.nbtn.active { color: var(--red2); }
+.nbtn.active::before { content:''; position:absolute; top:0; left:20%; right:20%; height:2px; background:var(--red2); border-radius:0 0 2px 2px; }
+
+/* MAIN */
+.main { padding: 74px 0 78px; min-height: 100vh; }
+.screen { display: none; animation: fadeUp 0.22s ease; }
+.screen.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* SECTION */
+.shead { padding: 18px 16px 10px; }
+.stitle { font-size: 23px; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 3px; }
+.sdesc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* CARD */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin: 0 16px 12px; }
+.clabel { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--red2); margin-bottom: 14px; }
+
+/* FORM */
+.field { margin-bottom: 13px; }
+.field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+.field input, .field select {
+  width: 100%; background: var(--surface3); border: 1px solid var(--border2); border-radius: 10px;
+  padding: 12px 14px; color: var(--white); font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
+}
+.field input:focus, .field select:focus { border-color: var(--red2); box-shadow: 0 0 0 3px rgba(229,57,53,0.15); }
+.field select option { background: var(--surface3); }
+
+/* BTN */
+.btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-family: 'Noto Sans KR', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+.btn-red { background: var(--red); color: white; }
+.btn-red:active { transform: scale(0.98); opacity: 0.9; }
+.btn-ghost { background: var(--surface3); color: var(--white); border: 1px solid var(--border2); margin-top: 10px; }
+.btn-sm { width: auto; padding: 9px 16px; font-size: 13px; border-radius: 9px; }
+.btn-green { background: var(--green); color: white; }
+.btn-green:active { transform: scale(0.98); }
+
+/* PROFILE */
+.profile-card {
+  margin: 0 16px 12px;
+  background: linear-gradient(135deg, #1a0808, #200e0e);
+  border: 1px solid rgba(198,40,40,0.25); border-radius: 16px; padding: 22px;
+  position: relative; overflow: hidden;
+}
+.profile-card::after { content:'✊'; position:absolute; right:16px; top:50%; transform:translateY(-50%); font-size:60px; opacity:0.05; }
+.p-name { font-size: 28px; font-weight: 900; letter-spacing: -1px; margin-bottom: 5px; }
+.p-meta { font-size: 13px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-bottom: 2px; }
+.p-badge { display: inline-block; background: var(--red); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 9px; }
+
+/* CONSENT */
+.consent-box { background: var(--yellow-bg); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; padding: 16px; margin-bottom: 16px; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.7; }
+.consent-box strong { color: var(--yellow); }
+.chk { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+.chk:last-child { border-bottom: none; }
+.chk input { width: 18px; height: 18px; min-width: 18px; accent-color: var(--red2); margin-top: 1px; }
+
+/* TOAST */
+.toast { border-radius: 12px; padding: 13px 16px; font-size: 14px; font-weight: 700; margin: 10px 0 0; display: none; text-align: center; line-height: 1.5; }
+.toast.ok  { background: var(--green-bg);  color: #81C784; border: 1px solid rgba(46,125,50,0.3); }
+.toast.err { background: rgba(198,40,40,0.1); color: #EF9A9A; border: 1px solid rgba(198,40,40,0.3); }
+.toast.info { background: var(--yellow-bg); color: #FCD34D; border: 1px solid rgba(245,158,11,0.3); }
+.toast.loading { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); animation: blink 1.2s infinite; }
+
+/* ── 체크인 히어로 버튼 ── */
+.checkin-hero {
+  margin: 0 16px 14px;
+  border: none; border-radius: 22px; width: calc(100% - 32px);
+  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+  padding: 36px 24px; text-align: center;
+}
+.checkin-hero.ready {
+  background: linear-gradient(145deg, #1B5E20, #2E7D32);
+  box-shadow: 0 14px 40px rgba(46,125,50,0.4);
+}
+.checkin-hero.loading {
+  background: linear-gradient(145deg, #1a1a1a, #252525);
+  box-shadow: none; cursor: default;
+}
+.checkin-hero.out-of-range {
+  background: linear-gradient(145deg, #4a1010, #6a1515);
+  box-shadow: 0 8px 24px rgba(198,40,40,0.3);
+}
+.checkin-hero.done {
+  background: linear-gradient(145deg, #0D47A1, #1565C0);
+  box-shadow: 0 8px 24px rgba(21,101,192,0.35);
+  cursor: default;
+}
+.checkin-hero::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.07), transparent 60%);
+}
+.checkin-hero:active:not(.loading):not(.done) { transform: scale(0.97); }
+.ch-icon { font-size: 56px; margin-bottom: 10px; display: block; }
+.ch-title { font-size: 22px; font-weight: 900; color: white; letter-spacing: -0.5px; margin-bottom: 6px; }
+.ch-sub { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+/* GPS 상태 바 */
+.gps-bar {
+  margin: 0 16px 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.gps-icon { font-size: 24px; }
+.gps-info { flex: 1; }
+.gps-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+.gps-value { font-size: 14px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+.gps-value.near { color: #81C784; }
+.gps-value.far { color: #EF9A9A; }
+.gps-value.unknown { color: var(--muted); }
+
+/* 거리 게이지 */
+.dist-gauge { margin: 0 16px 12px; }
+.gauge-wrap { background: var(--surface3); border-radius: 20px; height: 8px; overflow: hidden; margin-top: 6px; }
+.gauge-fill { height: 100%; border-radius: 20px; transition: width 0.5s ease, background 0.3s; }
+.gauge-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-top: 4px; }
+
+/* 집회 정보 배너 */
+.rally-banner {
+  margin: 0 16px 12px;
+  background: linear-gradient(135deg, #0a1628, #0d1f3c);
+  border: 1px solid rgba(21,101,192,0.3); border-radius: 14px; padding: 16px 18px;
+}
+.rb-label { font-size: 11px; color: rgba(100,160,255,0.7); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.rb-name { font-size: 17px; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.3px; }
+.rb-loc { font-size: 13px; color: var(--muted); }
+.rb-radius { display: inline-block; background: rgba(21,101,192,0.2); border: 1px solid rgba(21,101,192,0.4); color: #90CAF9; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 6px; }
+
+/* 참석 기록 */
+.a-list { list-style: none; }
+.a-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.a-item:last-child { border-bottom: none; }
+.a-name { font-weight: 700; font-size: 15px; margin-bottom: 3px; }
+.a-meta { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+.a-badge { display: inline-block; background: var(--red-dim); border: 1px solid rgba(198,40,40,0.3); color: var(--red2); font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 3px; }
+.a-time { font-size: 12px; color: var(--red2); font-family: 'IBM Plex Mono', monospace; text-align: right; white-space: nowrap; margin-left: 8px; }
+
+.empty { text-align: center; padding: 36px 0; color: var(--muted); }
+.empty .ei { font-size: 38px; margin-bottom: 10px; }
+.empty p { font-size: 13px; }
+
+/* 성공 오버레이 */
+.success-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
+  flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 32px;
+}
+.success-overlay.show { display: flex; animation: fadeUp 0.3s ease; }
+.s-circle {
+  width: 110px; height: 110px; border-radius: 50%; background: var(--green);
+  display: flex; align-items: center; justify-content: center; font-size: 58px;
+  margin-bottom: 24px; animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+.s-name { font-size: 28px; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 6px; }
+.s-branch { color: var(--muted); font-size: 14px; margin-bottom: 14px; }
+.s-event { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.s-time { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+/* 관리자 - 집회 설정 */
+.rally-setup { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin: 0 16px 12px; }
+.rs-active {
+  background: linear-gradient(135deg, #0a1628, #0d1f3c);
+  border-color: rgba(21,101,192,0.4);
+}
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 0 16px 12px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 15px 10px; text-align: center; }
+.stat-num { font-size: 30px; font-weight: 900; font-family: 'IBM Plex Mono', monospace; color: var(--red2); }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+.search-wrap { position: relative; margin-bottom: 12px; }
+.search-wrap input { width: 100%; background: var(--surface3); border: 1px solid var(--border2); border-radius: 10px; padding: 11px 14px 11px 36px; color: var(--white); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; outline: none; }
+.search-wrap input:focus { border-color: var(--red2); }
+.search-wrap::before { content:'🔍'; position:absolute; left:11px; top:50%; transform:translateY(-50%); font-size:13px; }
+
+/* 설정 */
+.setup-step { display: flex; gap: 13px; margin-bottom: 20px; }
+.step-num { width: 28px; height: 28px; min-width: 28px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; margin-top: 1px; }
+.step-body strong { font-size: 14px; display: block; margin-bottom: 4px; }
+.step-body p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+.step-body code { background: var(--surface3); padding: 1px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--yellow); word-break: break-all; }
+.copy-btn { width: 100%; background: var(--surface3); border: 1px dashed var(--border2); border-radius: 10px; padding: 12px 14px; margin-top: 8px; color: var(--yellow); font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-align: left; cursor: pointer; line-height: 1.6; }
+.url-row { display: flex; gap: 8px; margin-top: 8px; }
+.url-row input { flex: 1; background: var(--surface3); border: 1px solid var(--border2); border-radius: 10px; padding: 11px 12px; color: white; font-family: 'IBM Plex Mono', monospace; font-size: 12px; outline: none; }
+.url-row input:focus { border-color: var(--red2); }
+
+.lock-wrap { text-align: center; padding: 40px 24px 24px; }
+.lock-icon { font-size: 60px; margin-bottom: 16px; }
+.lock-wrap p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.privacy-note { text-align: center; font-size: 11px; color: rgba(255,255,255,0.2); padding: 16px; line-height: 1.8; }
+
+.pill-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; background: var(--surface3); border: 1px solid var(--border2); border-radius: 20px; padding: 6px 12px; font-size: 13px; }
+.pill button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 0 0 2px; }
+</style>
+</head>
+<body>
+
+<!-- 성공 오버레이 -->
+<div class="success-overlay" id="success-overlay">
+  <div class="s-circle">✅</div>
+  <div class="s-name" id="so-name">—</div>
+  <div class="s-branch" id="so-branch">—</div>
+  <div class="s-event" id="so-event">—</div>
+  <div class="s-time" id="so-time">—</div>
+  <button class="btn btn-ghost" style="max-width:260px" onclick="closeSuccess()">확인</button>
+</div>
+
+<!-- 헤더 -->
+<header class="header">
+  <div class="header-logo">
+    <div class="header-fist">✊</div>
+    <div>
+      <div class="header-title">부산지하철노동조합</div>
+      <div class="header-sub">RALLY CHECK-IN</div>
+    </div>
+  </div>
+  <div class="conn-pill">
+    <div class="cdot" id="cdot"></div>
+    <span id="ctxt">확인 중</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ══ 1. 내 정보 ══ -->
+  <div class="screen active" id="screen-member">
+
+    <div id="sec-consent">
+      <div class="shead">
+        <div class="stitle">조합원 등록</div>
+        <div class="sdesc">집회 체크인을 위한 정보를 등록합니다.<br>최초 1회만 입력하면 됩니다.</div>
+      </div>
+      <div style="padding:0 16px">
+        <div class="consent-box">
+          <strong>⚠️ 개인정보 수집·이용 동의</strong><br><br>
+          수집 항목: 이름, 사번, 소속부서, 지회명, 위치정보(GPS)<br>
+          수집 목적: 집회 현장 반경 내 참석 자동 확인<br>
+          보관 기간: 해당 집회 종료 후 1년<br>
+          저장 위치: 노동조합 전용 Google Sheets<br>
+          <strong>위치정보는 체크인 순간만 사용되며 사측에 제공하지 않습니다.</strong>
+        </div>
+        <div style="margin-bottom:16px">
+          <label class="chk"><input type="checkbox" id="c1"><span>개인정보 수집 및 이용에 동의합니다 (필수)</span></label>
+          <label class="chk"><input type="checkbox" id="c2"><span>위치정보 수집 및 이용에 동의합니다 (필수) — 위치정보법 제18조</span></label>
+          <label class="chk"><input type="checkbox" id="c3"><span>수집 정보가 노조 내부에서만 사용됨을 확인하였습니다 (필수)</span></label>
+        </div>
+        <button class="btn btn-red" onclick="agreeConsent()">동의하고 정보 등록하기</button>
+        <div class="toast err" id="consent-msg">모든 항목에 동의해 주세요.</div>
+      </div>
+    </div>
+
+    <div id="sec-form" style="display:none">
+      <div class="shead">
+        <div class="stitle">정보 입력</div>
+        <div class="sdesc">정확하게 입력해 주세요.</div>
+      </div>
+      <div class="card">
+        <div class="clabel">📝 조합원 정보</div>
+        <div class="field"><label>이름</label><input type="text" id="inp-name" placeholder="홍길동"></div>
+        <div class="field"><label>사번</label><input type="text" id="inp-empno" placeholder="123456" inputmode="numeric"></div>
+        <div class="field"><label>소속 부서</label><input type="text" id="inp-dept" placeholder="운전직 / 역무직 / 기술직 / 사무직"></div>
+        <div class="field"><label>소속 지회</label>
+          <select id="inp-branch"><option value="">-- 지회 선택 --</option></select>
+        </div>
+        <button class="btn btn-red" onclick="saveProfile()">💾 등록 완료</button>
+        <div class="toast" id="save-msg"></div>
+      </div>
+    </div>
+
+    <div id="sec-profile" style="display:none">
+      <div class="shead">
+        <div class="stitle">내 정보</div>
+        <div class="sdesc">등록된 조합원 정보입니다.</div>
+      </div>
+      <div class="profile-card">
+        <div class="p-name" id="d-name">—</div>
+        <div class="p-meta" id="d-empno">사번: —</div>
+        <div class="p-meta" id="d-dept">소속: —</div>
+        <div class="p-badge" id="d-branch">—</div>
+      </div>
+      <div style="padding:0 16px">
+        <div class="card" style="margin:0 0 10px; background:var(--green-bg); border-color:rgba(46,125,50,0.3)">
+          <div style="font-size:14px; color:#81C784; font-weight:700; margin-bottom:5px">✅ 등록 완료</div>
+          <div style="font-size:13px; color:var(--muted); line-height:1.6">
+            집회 당일 <strong style="color:white">체크인</strong> 탭에서 버튼 한 번만 누르면<br>
+            GPS로 현장 확인 후 자동 참석 처리됩니다.
+          </div>
+        </div>
+        <button class="btn btn-ghost" onclick="editProfile()">✏️ 정보 수정</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 2. 체크인 ══ -->
+  <div class="screen" id="screen-checkin">
+
+    <div id="ci-no-profile" style="display:none; padding:0 16px">
+      <div class="shead" style="padding:18px 0 10px">
+        <div class="stitle">체크인</div>
+      </div>
+      <div class="card" style="margin:0; text-align:center">
+        <div style="font-size:40px; margin-bottom:12px">⚠️</div>
+        <p style="color:var(--muted); font-size:14px; margin-bottom:16px">먼저 조합원 정보를 등록해 주세요.</p>
+        <button class="btn btn-red btn-sm" onclick="showTab('member')">정보 등록하러 가기</button>
+      </div>
+    </div>
+
+    <div id="ci-no-rally" style="display:none; padding:0 16px">
+      <div class="shead" style="padding:18px 0 10px">
+        <div class="stitle">체크인</div>
+      </div>
+      <div class="card" style="margin:0; text-align:center">
+        <div style="font-size:40px; margin-bottom:12px">📅</div>
+        <p style="color:var(--muted); font-size:14px">현재 진행 중인 집회가 없습니다.<br>관리자에게 문의해 주세요.</p>
+      </div>
+    </div>
+
+    <div id="ci-main" style="display:none">
+      <div class="shead">
+        <div class="stitle">집회 체크인</div>
+        <div class="sdesc">버튼을 탭하면 GPS로 현장 확인 후 자동 기록됩니다.</div>
+      </div>
+
+      <!-- 집회 정보 -->
+      <div class="rally-banner" id="ci-rally-banner">
+        <div class="rb-label">🔴 진행 중인 집회</div>
+        <div class="rb-name" id="ci-rally-name">—</div>
+        <div class="rb-loc" id="ci-rally-loc">📍 위치 설정 중...</div>
+        <div class="rb-radius" id="ci-rally-radius">반경 1km 이내 참석 인정</div>
+      </div>
+
+      <!-- GPS 상태 -->
+      <div class="gps-bar" id="gps-bar">
+        <div class="gps-icon" id="gps-icon">📍</div>
+        <div class="gps-info">
+          <div class="gps-label">현재 위치 / 집회까지 거리</div>
+          <div class="gps-value unknown" id="gps-value">위치 확인 전</div>
+        </div>
+        <button onclick="refreshGPS()" style="background:none; border:none; color:var(--muted); cursor:pointer; font-size:20px; padding:4px">🔄</button>
+      </div>
+
+      <!-- 거리 게이지 -->
+      <div class="dist-gauge" id="dist-gauge" style="display:none">
+        <div style="font-size:12px; color:var(--muted); margin-bottom:4px; display:flex; justify-content:space-between">
+          <span>집회 장소</span><span id="gauge-dist-text">—</span>
+        </div>
+        <div class="gauge-wrap">
+          <div class="gauge-fill" id="gauge-fill" style="width:0%; background:var(--green2)"></div>
+        </div>
+        <div class="gauge-labels"><span>0m</span><span>500m</span><span>1km</span></div>
+      </div>
+
+      <!-- 체크인 버튼 -->
+      <button class="checkin-hero loading" id="ci-btn" onclick="doCheckin()">
+        <span class="ch-icon">📍</span>
+        <div class="ch-title">위치 확인 중...</div>
+        <div class="ch-sub">GPS 신호를 받는 중입니다</div>
+      </button>
+
+      <div class="toast" id="ci-toast" style="margin:0 16px 12px"></div>
+
+      <!-- 내 참석 기록 -->
+      <div class="card">
+        <div class="clabel">📋 내 참석 기록</div>
+        <ul class="a-list" id="my-history">
+          <div class="empty"><div class="ei">📭</div><p>아직 참석 기록이 없습니다</p></div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 3. 관리자 ══ -->
+  <div class="screen" id="screen-admin">
+
+    <div id="admin-lock">
+      <div class="lock-wrap">
+        <div class="lock-icon">🔐</div>
+        <p>관리자 전용 화면입니다.<br>집행부만 접근 가능합니다.</p>
+        <div class="field">
+          <input type="password" id="admin-pw" placeholder="비밀번호"
+            style="text-align:center; font-size:18px; letter-spacing:4px; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:13px; color:white; width:100%; outline:none"
+            onkeydown="if(event.key==='Enter')adminLogin()">
+        </div>
+        <button class="btn btn-red" onclick="adminLogin()" style="margin-top:8px">입장</button>
+        <div class="toast err" id="admin-pw-msg" style="margin:10px 0 0">비밀번호가 틀렸습니다.</div>
+      </div>
+    </div>
+
+    <div id="admin-dash" style="display:none">
+      <div class="shead">
+        <div class="stitle">관리자</div>
+      </div>
+
+      <!-- 집회 활성화 -->
+      <div class="card" id="rally-setup-card">
+        <div class="clabel">🎯 집회 활성화</div>
+        <div class="field">
+          <label>집회 선택</label>
+          <select id="admin-event-sel">
+            <option value="">-- 집회 선택 --</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>집회 장소명</label>
+          <input type="text" id="rally-loc-name" placeholder="예: 부산시청 앞 광장">
+        </div>
+        <div class="field">
+          <label>참석 인정 반경</label>
+          <select id="rally-radius">
+            <option value="500">500m</option>
+            <option value="1000" selected>1km</option>
+            <option value="1500">1.5km</option>
+            <option value="2000">2km</option>
+          </select>
+        </div>
+        <button class="btn btn-red" onclick="setRallyLocation()">📍 현재 위치로 집회 장소 설정</button>
+        <div class="toast" id="rally-toast"></div>
+
+        <!-- 현재 활성 집회 표시 -->
+        <div id="active-rally-info" style="display:none; margin-top:14px">
+          <div class="divider" style="margin:14px 0 14px"></div>
+          <div style="background:var(--green-bg); border:1px solid rgba(46,125,50,0.3); border-radius:10px; padding:14px">
+            <div style="font-size:12px; color:#81C784; font-weight:700; margin-bottom:6px">🟢 현재 활성 집회</div>
+            <div style="font-size:15px; font-weight:700; margin-bottom:4px" id="active-name">—</div>
+            <div style="font-size:12px; color:var(--muted)" id="active-loc">—</div>
+            <div style="font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-top:4px" id="active-coords">—</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:10px; color:#EF9A9A" onclick="clearActiveRally()">집회 종료</button>
+        </div>
+      </div>
+
+      <!-- 집회 관리 -->
+      <div class="card">
+        <div class="clabel">📅 집회 목록 관리</div>
+        <div style="display:flex; gap:8px; margin-bottom:12px">
+          <input type="text" id="new-event-inp" placeholder="새 집회명 입력"
+            style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none">
+          <button class="btn btn-red btn-sm" onclick="addEvent()">추가</button>
+        </div>
+        <div class="pill-wrap" id="event-pill-list"></div>
+      </div>
+
+      <!-- 통계 -->
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num" id="st-total">—</div><div class="stat-label">총 참석</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-today">—</div><div class="stat-label">오늘</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-branch">—</div><div class="stat-label">지회 수</div></div>
+      </div>
+
+      <!-- 참석자 목록 -->
+      <div class="card">
+        <div class="clabel">👥 참석자 목록</div>
+        <div class="search-wrap">
+          <input type="text" id="admin-search" placeholder="이름·사번·지회 검색" oninput="filterList()">
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="loadAttendees()">🔄 새로고침</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">📥 CSV</button>
+        </div>
+        <ul class="a-list" id="attendee-list">
+          <div class="empty"><div class="ei">⏳</div><p>로딩 중...</p></div>
+        </ul>
+      </div>
+
+      <div style="padding:0 16px 16px">
+        <button class="btn btn-ghost" onclick="adminLogout()" style="color:#EF9A9A; border-color:rgba(198,40,40,0.3)">로그아웃</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 4. 설정 ══ -->
+  <div class="screen" id="screen-setting">
+    <div class="shead"><div class="stitle">설정</div></div>
+
+    <div class="card">
+      <div class="clabel">🔗 Google Sheets 연동</div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:13px; color:var(--muted)">
+        <div class="cdot" id="cdot2"></div>
+        <span id="ctxt2">연결 상태 확인 중...</span>
+      </div>
+      <div class="field">
+        <label>Apps Script 웹 앱 URL</label>
+        <div class="url-row">
+          <input type="url" id="url-inp" placeholder="https://script.google.com/macros/s/...">
+          <button class="btn btn-red btn-sm" onclick="saveUrl()">저장</button>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="testConn()" style="margin-top:0">🔗 연결 테스트</button>
+      <div class="toast" id="url-toast"></div>
+    </div>
+
+    <div class="card">
+      <div class="clabel">📖 최초 설정 방법</div>
+      <div class="setup-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Google Sheets 새 파일 만들기</strong>
+          <p><a href="https://sheets.google.com" target="_blank" style="color:var(--red2)">sheets.google.com</a> → 새 스프레드시트<br>파일명: <code>노조 집회 참석 관리</code></p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Apps Script 열기</strong>
+          <p>메뉴 → <code>확장 프로그램</code> → <code>Apps Script</code></p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>코드 붙여넣기</strong>
+          <p>기존 코드 전체 삭제 후 아래 버튼 탭 → 복사 → 붙여넣기 → 저장(💾)</p>
+          <button class="copy-btn" onclick="copyCode(this)">📋 탭하면 코드가 복사됩니다</button>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>웹 앱으로 배포</strong>
+          <p><code>배포</code> → <code>새 배포</code> → 유형: <code>웹 앱</code><br>
+          실행: <code>나</code> / 액세스: <code>모든 사용자</code> → URL 복사</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>위 URL 입력 → 저장 → 연결 테스트</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="clabel">🏢 지회 목록</div>
+      <div style="display:flex; gap:8px; margin-bottom:12px">
+        <input type="text" id="new-branch-inp" placeholder="지회명 입력"
+          style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none">
+        <button class="btn btn-red btn-sm" onclick="addBranch()">추가</button>
+      </div>
+      <ul id="branch-list" style="list-style:none"></ul>
+    </div>
+
+    <div class="card">
+      <div class="clabel">🔑 관리자 비밀번호</div>
+      <div class="field"><label>현재 비밀번호</label><input type="password" id="pw-cur" placeholder="현재 비밀번호"></div>
+      <div class="field"><label>새 비밀번호</label><input type="password" id="pw-new" placeholder="새 비밀번호 (4자 이상)"></div>
+      <div class="field"><label>확인</label><input type="password" id="pw-con" placeholder="다시 입력"></div>
+      <button class="btn btn-red" onclick="changePw()">변경</button>
+      <div class="toast" id="pw-toast"></div>
+    </div>
+
+    <div class="privacy-note">
+      수집된 개인정보 및 위치정보는 노동조합 내부 집회 참석 관리 목적으로만 사용됩니다.<br>
+      개인정보보호법 제15조 / 위치정보법 제18조 준수
+    </div>
+  </div>
+
+</main>
+
+<nav class="bnav">
+  <button class="nbtn active" onclick="showTab('member')" id="nav-member"><div class="ni">👤</div>내 정보</button>
+  <button class="nbtn" onclick="showTab('checkin')" id="nav-checkin"><div class="ni">✊</div>체크인</button>
+  <button class="nbtn" onclick="showTab('admin')" id="nav-admin"><div class="ni">🛡</div>관리자</button>
+  <button class="nbtn" onclick="showTab('setting')" id="nav-setting"><div class="ni">⚙️</div>설정</button>
+</nav>
+
+<script>
+// ═══════════════════════════
+//  Apps Script 코드
+// ═══════════════════════════
+const APPS_SCRIPT_CODE = `// ✊ 부산지하철노동조합 집회 체크인 시스템 (위치 기반)
+// Google Apps Script에 붙여넣기 후 웹 앱으로 배포
+// 액세스 권한: 모든 사용자 (조합원 구글 계정 불필요)
+
+const SH_ATTEND   = '참석자';
+const SH_EVENTS   = '집회목록';
+const SH_BRANCHES = '지회목록';
+const SH_RALLY    = '활성집회';
+
+function getSheet(name, headers) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(name);
+  if (!sh) {
+    sh = ss.insertSheet(name);
+    sh.appendRow(headers);
+    sh.getRange(1,1,1,headers.length).setFontWeight('bold').setBackground('#B71C1C').setFontColor('white');
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
+function doGet(e)  { return respond(e); }
+function doPost(e) { return respond(e); }
+
+function respond(e) {
+  const p = e.parameter || {};
+  let b = {};
+  try { b = JSON.parse((e.postData||{}).contents||'{}'); } catch(err) {}
+  const action = p.action || b.action;
+  let result;
+  try {
+    if      (action==='ping')           result = { ok:true };
+    else if (action==='checkin')        result = checkin(b);
+    else if (action==='getActiveRally') result = getActiveRally();
+    else if (action==='setActiveRally') result = setActiveRally(b);
+    else if (action==='clearRally')     result = clearRally();
+    else if (action==='getEvents')      result = getEvents();
+    else if (action==='addEvent')       result = addEvent(b.name);
+    else if (action==='removeEvent')    result = removeEvent(b.name);
+    else if (action==='getAttendees')   result = getAttendees(b);
+    else if (action==='getBranches')    result = getBranches();
+    else if (action==='addBranch')      result = addBranch(b.name);
+    else if (action==='removeBranch')   result = removeBranch(b.name);
+    else result = { ok:false, msg:'Unknown: '+action };
+  } catch(err) {
+    result = { ok:false, msg:err.toString() };
+  }
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function checkin(d) {
+  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지회','집회명','날짜','시간','위도','경도','거리(m)']);
+  const rows = sh.getDataRange().getValues();
+  for (let i=1;i<rows.length;i++) {
+    if (String(rows[i][2])===String(d.empno) && rows[i][5]===d.eventName)
+      return { ok:false, dup:true, msg:'이미 체크인 기록이 있습니다.' };
+  }
+  const now = new Date();
+  sh.appendRow([
+    now.toISOString(), d.name, d.empno, d.dept, d.branch, d.eventName,
+    Utilities.formatDate(now,'Asia/Seoul','yyyy-MM-dd'),
+    Utilities.formatDate(now,'Asia/Seoul','HH:mm:ss'),
+    d.lat||'', d.lng||'', d.distance||''
+  ]);
+  return { ok:true };
+}
+
+function getActiveRally() {
+  const sh = getSheet(SH_RALLY, ['집회명','장소명','위도','경도','반경(m)','설정시간']);
+  const rows = sh.getDataRange().getValues().slice(1).filter(r=>r[0]);
+  if (!rows.length) return { ok:true, rally:null };
+  const r = rows[rows.length-1];
+  return { ok:true, rally:{ eventName:r[0], locName:r[1], lat:r[2], lng:r[3], radius:r[4], setAt:r[5] } };
+}
+
+function setActiveRally(d) {
+  const sh = getSheet(SH_RALLY, ['집회명','장소명','위도','경도','반경(m)','설정시간']);
+  // 기존 데이터 초기화 후 새로 기록
+  const lastRow = sh.getLastRow();
+  if (lastRow > 1) sh.getRange(2,1,lastRow-1,6).clearContent();
+  sh.appendRow([d.eventName, d.locName, d.lat, d.lng, d.radius, new Date().toISOString()]);
+  return { ok:true };
+}
+
+function clearRally() {
+  const sh = getSheet(SH_RALLY, ['집회명','장소명','위도','경도','반경(m)','설정시간']);
+  const lastRow = sh.getLastRow();
+  if (lastRow > 1) sh.getRange(2,1,lastRow-1,6).clearContent();
+  return { ok:true };
+}
+
+function getEvents() {
+  const sh = getSheet(SH_EVENTS, ['집회명','등록일']);
+  const rows = sh.getDataRange().getValues().slice(1);
+  return { ok:true, events:rows.filter(r=>r[0]).map(r=>r[0]) };
+}
+function addEvent(name) {
+  if (!name) return {ok:false};
+  const sh = getSheet(SH_EVENTS,['집회명','등록일']);
+  if (sh.getDataRange().getValues().slice(1).some(r=>r[0]===name)) return {ok:false,msg:'이미 존재'};
+  sh.appendRow([name, new Date().toISOString()]);
+  return {ok:true};
+}
+function removeEvent(name) {
+  const sh = getSheet(SH_EVENTS,['집회명','등록일']);
+  const rows = sh.getDataRange().getValues();
+  for (let i=rows.length-1;i>=1;i--) { if(rows[i][0]===name){sh.deleteRow(i+1);break;} }
+  return {ok:true};
+}
+
+function getAttendees(p) {
+  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지회','집회명','날짜','시간','위도','경도','거리(m)']);
+  const rows = sh.getDataRange().getValues().slice(1);
+  let data = rows.filter(r=>r[0]).map(r=>({
+    timestamp:r[0],name:r[1],empno:r[2],dept:r[3],
+    branch:r[4],eventName:r[5],dateStr:r[6],timeStr:r[7],
+    lat:r[8],lng:r[9],distance:r[10]
+  }));
+  if (p&&p.empno) data=data.filter(r=>String(r.empno)===String(p.empno));
+  return {ok:true, attendees:data.reverse()};
+}
+
+function getBranches() {
+  const sh = getSheet(SH_BRANCHES,['지회명']);
+  const rows = sh.getDataRange().getValues().slice(1).filter(r=>r[0]);
+  if (!rows.length) {
+    const def=['1지회','2지회','3지회','4지회','5지회','본조','직속'];
+    def.forEach(b=>sh.appendRow([b]));
+    return {ok:true, branches:def};
+  }
+  return {ok:true, branches:rows.map(r=>r[0])};
+}
+function addBranch(name) {
+  if(!name) return {ok:false};
+  getSheet(SH_BRANCHES,['지회명']).appendRow([name]);
+  return {ok:true};
+}
+function removeBranch(name) {
+  const sh=getSheet(SH_BRANCHES,['지회명']);
+  const rows=sh.getDataRange().getValues();
+  for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}
+  return {ok:true};
+}`;
+
+// ═══════════════════════════
+//  STATE
+// ═══════════════════════════
+const LS = (k,v) => v!==undefined ? localStorage.setItem(k,JSON.stringify(v)) : JSON.parse(localStorage.getItem(k)||'null');
+let SCRIPT_URL  = localStorage.getItem('ucfg_url') || '';
+let ADMIN_PW    = localStorage.getItem('ucfg_pw')  || 'union2026';
+let profile     = LS('union_profile');
+let events      = LS('union_events')   || [];
+let branches    = LS('union_branches') || ['1지회','2지회','3지회','4지회','5지회','본조','직속'];
+let activeRally = LS('union_active_rally'); // { eventName, locName, lat, lng, radius }
+let allAttendees = [];
+let userLat = null, userLng = null;
+let gpsWatcher = null;
+let checkinDone = false;
+
+// ═══════════════════════════
+//  API
+// ═══════════════════════════
+async function api(action, data={}) {
+  if (!SCRIPT_URL) throw new Error('NO_URL');
+  const res = await fetch(SCRIPT_URL + '?action=' + action, {
+    method: 'POST', body: JSON.stringify({action,...data}),
+    headers: {'Content-Type':'text/plain'}
+  });
+  return res.json();
+}
+
+// ═══════════════════════════
+//  INIT
+// ═══════════════════════════
+window.addEventListener('load', () => {
+  document.getElementById('url-inp').value = SCRIPT_URL;
+  initMember();
+  renderBranchSelect();
+  renderBranchList();
+  renderEventPills();
+  renderAdminEventSelect();
+  checkConn();
+  if (SCRIPT_URL) { loadBranches(); loadEvents(); loadActiveRally(); }
+});
+
+// ═══════════════════════════
+//  TAB
+// ═══════════════════════════
+function showTab(tab) {
+  ['member','checkin','admin','setting'].forEach(t => {
+    document.getElementById('screen-'+t).classList.toggle('active', t===tab);
+    document.getElementById('nav-'+t).classList.toggle('active', t===tab);
+  });
+  if (tab==='checkin') initCheckin();
+}
+
+// ═══════════════════════════
+//  CONSENT
+// ═══════════════════════════
+function agreeConsent() {
+  if (!document.getElementById('c1').checked ||
+      !document.getElementById('c2').checked ||
+      !document.getElementById('c3').checked) {
+    showToast('consent-msg','err','모든 항목에 동의해 주세요.'); return;
+  }
+  localStorage.setItem('union_consented','1');
+  document.getElementById('sec-consent').style.display='none';
+  document.getElementById('sec-form').style.display='block';
+}
+
+// ═══════════════════════════
+//  MEMBER
+// ═══════════════════════════
+function initMember() {
+  const consented = localStorage.getItem('union_consented');
+  if (profile) {
+    document.getElementById('sec-consent').style.display='none';
+    document.getElementById('sec-form').style.display='none';
+    document.getElementById('sec-profile').style.display='block';
+    renderProfile();
+  } else if (consented) {
+    document.getElementById('sec-consent').style.display='none';
+    document.getElementById('sec-form').style.display='block';
+  }
+}
+
+function saveProfile() {
+  const name=document.getElementById('inp-name').value.trim();
+  const empno=document.getElementById('inp-empno').value.trim();
+  const dept=document.getElementById('inp-dept').value.trim();
+  const branch=document.getElementById('inp-branch').value;
+  if (!name||!empno||!dept||!branch) { showToast('save-msg','err','모든 항목을 입력해 주세요.'); return; }
+  profile={name,empno,dept,branch};
+  LS('union_profile',profile);
+  showToast('save-msg','ok','✅ 등록 완료!');
+  setTimeout(()=>{
+    document.getElementById('sec-form').style.display='none';
+    document.getElementById('sec-profile').style.display='block';
+    renderProfile();
+  },700);
+}
+
+function renderProfile() {
+  document.getElementById('d-name').textContent  = profile.name;
+  document.getElementById('d-empno').textContent = '사번: '+profile.empno;
+  document.getElementById('d-dept').textContent  = '소속: '+profile.dept;
+  document.getElementById('d-branch').textContent = profile.branch;
+}
+
+function editProfile() {
+  document.getElementById('sec-profile').style.display='none';
+  document.getElementById('sec-form').style.display='block';
+  if (profile) {
+    document.getElementById('inp-name').value   = profile.name;
+    document.getElementById('inp-empno').value  = profile.empno;
+    document.getElementById('inp-dept').value   = profile.dept;
+    document.getElementById('inp-branch').value = profile.branch;
+  }
+}
+
+// ═══════════════════════════
+//  CHECKIN
+// ═══════════════════════════
+function initCheckin() {
+  checkinDone = false;
+  if (!profile) {
+    document.getElementById('ci-no-profile').style.display='block';
+    document.getElementById('ci-no-rally').style.display='none';
+    document.getElementById('ci-main').style.display='none';
+    return;
+  }
+  if (!activeRally) {
+    // 서버에서 다시 조회
+    if (SCRIPT_URL) loadActiveRally().then(()=> { if (!activeRally) showNoRally(); else showCheckinMain(); });
+    else showNoRally();
+    return;
+  }
+  showCheckinMain();
+}
+
+function showNoRally() {
+  document.getElementById('ci-no-profile').style.display='none';
+  document.getElementById('ci-no-rally').style.display='block';
+  document.getElementById('ci-main').style.display='none';
+}
+
+function showCheckinMain() {
+  document.getElementById('ci-no-profile').style.display='none';
+  document.getElementById('ci-no-rally').style.display='none';
+  document.getElementById('ci-main').style.display='block';
+  // 집회 정보 표시
+  document.getElementById('ci-rally-name').textContent = activeRally.eventName;
+  document.getElementById('ci-rally-loc').textContent  = '📍 '+activeRally.locName;
+  document.getElementById('ci-rally-radius').textContent = '반경 '+(activeRally.radius>=1000?(activeRally.radius/1000)+'km':activeRally.radius+'m')+' 이내 참석 인정';
+  // GPS 시작
+  startGPS();
+  loadMyHistory();
+}
+
+// GPS 감시
+function startGPS() {
+  if (!navigator.geolocation) {
+    setGPSUI('unknown', '위치 기능 미지원');
+    setBtnState('out-of-range', '❌', 'GPS 미지원', '브라우저가 위치를 지원하지 않습니다');
+    return;
+  }
+  setGPSUI('unknown', '위치 확인 중...');
+  setBtnState('loading', '📍', '위치 확인 중...', 'GPS 신호를 받는 중입니다');
+
+  if (gpsWatcher) navigator.geolocation.clearWatch(gpsWatcher);
+  gpsWatcher = navigator.geolocation.watchPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      updateDistanceUI();
+    },
+    err => {
+      setGPSUI('unknown', '위치 접근 거부됨');
+      setBtnState('out-of-range','❌','위치 접근 불가','설정에서 위치 권한을 허용해 주세요');
+    },
+    { enableHighAccuracy:true, maximumAge:10000, timeout:15000 }
+  );
+}
+
+function refreshGPS() {
+  userLat=null; userLng=null;
+  setGPSUI('unknown','위치 재확인 중...');
+  setBtnState('loading','📍','위치 확인 중...','GPS 신호를 받는 중입니다');
+  if (gpsWatcher) navigator.geolocation.clearWatch(gpsWatcher);
+  startGPS();
+}
+
+function updateDistanceUI() {
+  if (!activeRally || userLat===null) return;
+  const dist = calcDist(userLat, userLng, parseFloat(activeRally.lat), parseFloat(activeRally.lng));
+  const radius = parseInt(activeRally.radius);
+  const distStr = dist >= 1000 ? (dist/1000).toFixed(1)+'km' : Math.round(dist)+'m';
+  const inRange = dist <= radius;
+
+  // GPS 바
+  setGPSUI(inRange?'near':'far', distStr+' 거리');
+  document.getElementById('dist-gauge').style.display='block';
+
+  // 게이지 (반경 기준 100%)
+  const pct = Math.min(100, (dist/radius)*100);
+  const fill = document.getElementById('gauge-fill');
+  fill.style.width = (100-pct)+'%';
+  fill.style.background = inRange ? 'var(--green2)' : 'var(--red2)';
+  document.getElementById('gauge-dist-text').textContent = distStr;
+
+  // 버튼
+  if (checkinDone) return;
+  if (inRange) {
+    setBtnState('ready','✊','참석 체크인','현장 확인 완료! 탭하여 참석을 기록하세요');
+  } else {
+    setBtnState('out-of-range','📍','범위 밖입니다',`집회 장소까지 ${distStr} — 반경 ${radius>=1000?(radius/1000)+'km':radius+'m'} 이내에서 체크인 가능합니다`);
+  }
+}
+
+function setGPSUI(state, text) {
+  const val = document.getElementById('gps-value');
+  const icon = document.getElementById('gps-icon');
+  val.textContent = text;
+  val.className = 'gps-value ' + state;
+  icon.textContent = state==='near' ? '🟢' : state==='far' ? '🔴' : '📍';
+}
+
+function setBtnState(state, icon, title, sub) {
+  const btn = document.getElementById('ci-btn');
+  btn.className = 'checkin-hero ' + state;
+  btn.querySelector('.ch-icon').textContent = icon;
+  btn.querySelector('.ch-title').textContent = title;
+  btn.querySelector('.ch-sub').textContent = sub;
+}
+
+// 거리 계산 (Haversine)
+function calcDist(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2) +
+            Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+            Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+async function doCheckin() {
+  if (checkinDone) return;
+  const btn = document.getElementById('ci-btn');
+  if (btn.classList.contains('loading') || btn.classList.contains('out-of-range')) return;
+  if (!activeRally) { showToast('ci-toast','err','진행 중인 집회가 없습니다.'); return; }
+  if (userLat===null) { showToast('ci-toast','err','위치를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.'); return; }
+
+  const dist = calcDist(userLat, userLng, parseFloat(activeRally.lat), parseFloat(activeRally.lng));
+  if (dist > parseInt(activeRally.radius)) {
+    showToast('ci-toast','err','집회 장소 반경 밖입니다. 현장으로 이동 후 다시 시도하세요.'); return;
+  }
+
+  setBtnState('loading','⏳','기록 중...','Google Sheets에 참석을 기록하고 있습니다');
+  showToast('ci-toast','loading','⏳ Google Sheets에 기록 중...');
+
+  try {
+    const r = await api('checkin', {
+      ...profile,
+      eventName: activeRally.eventName,
+      lat: userLat.toFixed(6),
+      lng: userLng.toFixed(6),
+      distance: Math.round(dist)
+    });
+    if (r.dup) {
+      showToast('ci-toast','info',`⚠️ 이미 "${activeRally.eventName}" 체크인 기록이 있습니다.`);
+      setBtnState('done','✅','이미 체크인됨','');
+      checkinDone=true;
+    } else if (r.ok) {
+      checkinDone=true;
+      setBtnState('done','✅','참석 완료!','');
+      showToast('ci-toast','ok','');
+      showSuccess(profile.name, profile.branch, activeRally.eventName);
+      loadMyHistory();
+      if (navigator.vibrate) navigator.vibrate([100,50,200]);
+    } else throw new Error(r.msg);
+  } catch(e) {
+    showToast('ci-toast','err', e.message==='NO_URL'?'서버 URL이 설정되지 않았습니다':'❌ 오류: '+e.message);
+    setBtnState('ready','✊','다시 시도','탭하여 참석을 기록하세요');
+  }
+}
+
+function showSuccess(name, branch, eventName) {
+  const now = new Date();
+  document.getElementById('so-name').textContent  = name + ' 조합원';
+  document.getElementById('so-branch').textContent = branch;
+  document.getElementById('so-event').textContent = eventName;
+  document.getElementById('so-time').textContent  =
+    now.toLocaleDateString('ko-KR')+' '+now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('success-overlay').classList.add('show');
+}
+function closeSuccess() { document.getElementById('success-overlay').classList.remove('show'); }
+
+async function loadMyHistory() {
+  if (!profile||!SCRIPT_URL) return;
+  try {
+    const r = await api('getAttendees',{empno:profile.empno});
+    const mine = (r.attendees||[]).slice(0,8);
+    const ul = document.getElementById('my-history');
+    if (!mine.length) { ul.innerHTML='<div class="empty"><div class="ei">📭</div><p>아직 참석 기록이 없습니다</p></div>'; return; }
+    ul.innerHTML = mine.map(a=>`
+      <li class="a-item">
+        <div>
+          <div class="a-name">${a.eventName}</div>
+          <div class="a-meta">${a.dateStr} ${a.timeStr}</div>
+          ${a.distance?`<div class="a-meta">📍 ${a.distance}m 거리에서 체크인</div>`:''}
+        </div>
+        <div class="a-time">✅</div>
+      </li>`).join('');
+  } catch {}
+}
+
+// ═══════════════════════════
+//  ADMIN
+// ═══════════════════════════
+function adminLogin() {
+  if (document.getElementById('admin-pw').value===ADMIN_PW) {
+    document.getElementById('admin-lock').style.display='none';
+    document.getElementById('admin-dash').style.display='block';
+    loadAttendees(); loadEvents(); renderAdminEventSelect(); renderEventPills();
+    loadActiveRally();
+  } else {
+    showToast('admin-pw-msg','err','비밀번호가 틀렸습니다.');
+    document.getElementById('admin-pw').value='';
+  }
+}
+function adminLogout() {
+  document.getElementById('admin-dash').style.display='none';
+  document.getElementById('admin-lock').style.display='block';
+  document.getElementById('admin-pw').value='';
+}
+
+// 집회 위치 설정
+async function setRallyLocation() {
+  const eventName = document.getElementById('admin-event-sel').value;
+  const locName   = document.getElementById('rally-loc-name').value.trim();
+  const radius    = document.getElementById('rally-radius').value;
+  if (!eventName) { showToast('rally-toast','err','집회를 선택해 주세요.'); return; }
+  if (!locName)   { showToast('rally-toast','err','장소명을 입력해 주세요.'); return; }
+  if (!navigator.geolocation) { showToast('rally-toast','err','위치 기능을 사용할 수 없습니다.'); return; }
+
+  showToast('rally-toast','loading','📍 현재 위치 확인 중...');
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    try {
+      const r = await api('setActiveRally',{eventName,locName,lat,lng,radius:parseInt(radius)});
+      if (r.ok) {
+        activeRally = {eventName,locName,lat,lng,radius:parseInt(radius)};
+        LS('union_active_rally',activeRally);
+        showToast('rally-toast','ok',`✅ "${eventName}" 집회가 활성화되었습니다!\n위도: ${lat.toFixed(4)}, 경도: ${lng.toFixed(4)}`);
+        renderActiveRallyInfo();
+      }
+    } catch(e) { showToast('rally-toast','err','❌ 설정 실패: '+e.message); }
+  }, ()=>{ showToast('rally-toast','err','위치 접근이 거부되었습니다.'); }, {enableHighAccuracy:true,timeout:10000});
+}
+
+async function clearActiveRally() {
+  if (!confirm('집회를 종료하면 조합원들이 더 이상 체크인할 수 없습니다. 종료할까요?')) return;
+  try {
+    await api('clearRally',{});
+    activeRally=null; LS('union_active_rally',null);
+    renderActiveRallyInfo();
+    showToast('rally-toast','info','집회가 종료되었습니다.');
+  } catch(e) { showToast('rally-toast','err','오류: '+e.message); }
+}
+
+async function loadActiveRally() {
+  if (!SCRIPT_URL) return;
+  try {
+    const r = await api('getActiveRally',{});
+    if (r.ok && r.rally) {
+      activeRally = r.rally;
+      LS('union_active_rally',activeRally);
+    } else {
+      activeRally=null;
+      LS('union_active_rally',null);
+    }
+    renderActiveRallyInfo();
+  } catch {}
+}
+
+function renderActiveRallyInfo() {
+  const info = document.getElementById('active-rally-info');
+  if (activeRally) {
+    document.getElementById('active-name').textContent  = activeRally.eventName;
+    document.getElementById('active-loc').textContent   = '📍 '+activeRally.locName;
+    const r = parseInt(activeRally.radius);
+    document.getElementById('active-coords').textContent = `반경 ${r>=1000?(r/1000)+'km':r+'m'} | ${parseFloat(activeRally.lat).toFixed(4)}, ${parseFloat(activeRally.lng).toFixed(4)}`;
+    info.style.display='block';
+  } else {
+    info.style.display='none';
+  }
+}
+
+// ═══════════════════════════
+//  EVENTS
+// ═══════════════════════════
+async function loadEvents() {
+  if (!SCRIPT_URL) return;
+  try {
+    const r = await api('getEvents');
+    if (r.ok) { events=r.events; LS('union_events',events); renderEventPills(); renderAdminEventSelect(); }
+  } catch {}
+}
+
+function renderAdminEventSelect() {
+  const sel = document.getElementById('admin-event-sel');
+  sel.innerHTML='<option value="">-- 집회 선택 --</option>';
+  events.forEach(e=>{ const o=document.createElement('option'); o.value=e; o.textContent=e; sel.appendChild(o); });
+  if (activeRally) sel.value=activeRally.eventName;
+}
+
+function renderEventPills() {
+  const wrap = document.getElementById('event-pill-list');
+  if (!wrap) return;
+  wrap.innerHTML = events.length ? events.map((e,i)=>`
+    <span class="pill">${e}<button onclick="removeEvent(${i})">✕</button></span>`).join('')
+    : '<span style="font-size:13px;color:var(--muted)">등록된 집회가 없습니다</span>';
+}
+
+async function addEvent() {
+  const val=document.getElementById('new-event-inp').value.trim();
+  if (!val||events.includes(val)) return;
+  events.push(val); LS('union_events',events);
+  renderEventPills(); renderAdminEventSelect();
+  document.getElementById('new-event-inp').value='';
+  if (SCRIPT_URL) { try { await api('addEvent',{name:val}); } catch {} }
+}
+
+async function removeEvent(i) {
+  const name=events[i]; events.splice(i,1); LS('union_events',events);
+  renderEventPills(); renderAdminEventSelect();
+  if (SCRIPT_URL) { try { await api('removeEvent',{name}); } catch {} }
+}
+
+// ═══════════════════════════
+//  ATTENDEES
+// ═══════════════════════════
+async function loadAttendees() {
+  const ul=document.getElementById('attendee-list');
+  ul.innerHTML='<div class="empty"><div class="ei">⏳</div><p>불러오는 중...</p></div>';
+  try {
+    const r=await api('getAttendees',{});
+    allAttendees=r.attendees||[]; filterList(); updateStats();
+  } catch(e) {
+    ul.innerHTML=`<div class="empty"><div class="ei">❌</div><p>${e.message==='NO_URL'?'URL 미설정':e.message}</p></div>`;
+  }
+}
+
+function filterList() {
+  const q=(document.getElementById('admin-search')?.value||'').toLowerCase();
+  const filtered=allAttendees.filter(a=>!q||(a.name||'').includes(q)||(a.empno||'').toString().includes(q)||(a.branch||'').includes(q)||(a.eventName||'').includes(q));
+  const ul=document.getElementById('attendee-list');
+  if (!filtered.length) { ul.innerHTML='<div class="empty"><div class="ei">📭</div><p>참석자가 없습니다</p></div>'; return; }
+  ul.innerHTML=filtered.map(a=>`
+    <li class="a-item">
+      <div>
+        <div class="a-name">${a.name}</div>
+        <div class="a-meta">사번: ${a.empno} | ${a.dept}</div>
+        <span class="a-badge">${a.branch}</span>
+        <div class="a-meta" style="margin-top:4px">${a.eventName}${a.distance?' · '+a.distance+'m':''}</div>
+      </div>
+      <div class="a-time">${a.timeStr||''}<br><span style="color:rgba(255,255,255,0.25);font-size:10px">${a.dateStr||''}</span></div>
+    </li>`).join('');
+}
+
+function updateStats() {
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('st-total').textContent  = allAttendees.length;
+  document.getElementById('st-today').textContent  = allAttendees.filter(a=>(a.dateStr||'').replace(/\./g,'-')===today).length;
+  document.getElementById('st-branch').textContent = new Set(allAttendees.map(a=>a.branch)).size;
+}
+
+function exportCSV() {
+  const h=['이름','사번','소속','지회','집회명','날짜','시간','거리(m)'];
+  const rows=allAttendees.map(a=>[a.name,a.empno,a.dept,a.branch,a.eventName,a.dateStr,a.timeStr,a.distance||'']);
+  const csv=[h,...rows].map(r=>r.map(v=>`"${v||''}"`).join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=`집회참석자_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'-')}.csv`;
+  a.click();
+}
+
+// ═══════════════════════════
+//  BRANCHES
+// ═══════════════════════════
+async function loadBranches() {
+  try {
+    const r=await api('getBranches');
+    if (r.ok&&r.branches.length) { branches=r.branches; LS('union_branches',branches); renderBranchSelect(); renderBranchList(); }
+  } catch {}
+}
+
+function renderBranchSelect() {
+  const sel=document.getElementById('inp-branch');
+  const cur=profile?.branch||'';
+  sel.innerHTML='<option value="">-- 지회 선택 --</option>';
+  branches.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o); });
+  if (cur) sel.value=cur;
+}
+
+function renderBranchList() {
+  document.getElementById('branch-list').innerHTML=branches.map((b,i)=>`
+    <li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px">
+      <span>${b}</span>
+      <button onclick="removeBranchUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>
+    </li>`).join('');
+}
+
+async function addBranch() {
+  const val=document.getElementById('new-branch-inp').value.trim();
+  if (!val||branches.includes(val)) return;
+  branches.push(val); LS('union_branches',branches);
+  renderBranchSelect(); renderBranchList();
+  document.getElementById('new-branch-inp').value='';
+  if (SCRIPT_URL) { try { await api('addBranch',{name:val}); } catch {} }
+}
+
+async function removeBranchUI(i) {
+  const name=branches[i]; branches.splice(i,1); LS('union_branches',branches);
+  renderBranchSelect(); renderBranchList();
+  if (SCRIPT_URL) { try { await api('removeBranch',{name}); } catch {} }
+}
+
+// ═══════════════════════════
+//  SETTING
+// ═══════════════════════════
+function saveUrl() {
+  const url=document.getElementById('url-inp').value.trim();
+  if (!url.startsWith('https://script.google.com')) { showToast('url-toast','err','올바른 Apps Script URL이 아닙니다.'); return; }
+  SCRIPT_URL=url; localStorage.setItem('ucfg_url',url);
+  showToast('url-toast','ok','✅ 저장되었습니다. 연결 테스트를 해보세요.');
+}
+
+async function testConn() {
+  showToast('url-toast','loading','🔗 연결 테스트 중...');
+  try {
+    const r=await api('ping');
+    if (r.ok) { showToast('url-toast','ok','✅ 연결 성공!'); checkConn(); loadBranches(); loadEvents(); loadActiveRally(); }
+    else throw new Error();
+  } catch { showToast('url-toast','err','❌ 연결 실패. URL 확인 또는 배포 설정을 확인해 주세요.'); }
+}
+
+async function checkConn() {
+  const setUI=(cls,msg)=>{
+    ['cdot','cdot2'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='cdot '+cls;});
+    ['ctxt','ctxt2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=msg;});
+  };
+  if (!SCRIPT_URL) { setUI('err','URL 미설정'); return; }
+  setUI('ing','확인 중...');
+  try { const r=await api('ping'); r.ok?setUI('ok','Sheets 연결됨'):setUI('err','연결 오류'); }
+  catch { setUI('err','연결 실패'); }
+}
+
+function changePw() {
+  const cur=document.getElementById('pw-cur').value;
+  const nw=document.getElementById('pw-new').value;
+  const con=document.getElementById('pw-con').value;
+  if (cur!==ADMIN_PW) { showToast('pw-toast','err','현재 비밀번호가 틀렸습니다.'); return; }
+  if (nw.length<4)    { showToast('pw-toast','err','4자 이상 입력해 주세요.'); return; }
+  if (nw!==con)       { showToast('pw-toast','err','새 비밀번호가 일치하지 않습니다.'); return; }
+  ADMIN_PW=nw; localStorage.setItem('ucfg_pw',nw);
+  showToast('pw-toast','ok','✅ 비밀번호가 변경되었습니다.');
+  ['pw-cur','pw-new','pw-con'].forEach(id=>document.getElementById(id).value='');
+}
+
+function copyCode(btn) {
+  navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(()=>{
+    btn.textContent='✅ 복사 완료! Apps Script에 붙여넣기 하세요.';
+    setTimeout(()=>{btn.textContent='📋 탭하면 코드가 복사됩니다';},2500);
+  }).catch(()=>{ prompt('코드를 복사하세요:',APPS_SCRIPT_CODE); });
+}
+
+// ═══════════════════════════
+//  UTIL
+// ═══════════════════════════
+function showToast(id, type, msg) {
+  const el=document.getElementById(id);
+  if (!el) return;
+  el.textContent=msg; el.className='toast '+type; el.style.display='block';
+}
+</script>
+</body>
+</html>
