@@ -334,7 +334,12 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
         <div class="field"><label>이름</label><input type="text" id="inp-name" placeholder="홍길동"></div>
         <div class="field"><label>사번</label><input type="text" id="inp-empno" placeholder="123456" inputmode="numeric"></div>
         <div class="field"><label>소속 부서</label><input type="text" id="inp-dept" placeholder="운전직 / 역무직 / 기술직 / 사무직"></div>
-        <div class="field"><label>소속 지회</label>
+        <div class="field">
+          <label>소속 지부</label>
+          <select id="inp-jiboo"><option value="">-- 지부 선택 --</option></select>
+        </div>
+        <div class="field">
+          <label>소속 지회</label>
           <select id="inp-branch"><option value="">-- 지회 선택 --</option></select>
         </div>
         <button class="btn btn-red" onclick="saveProfile()">💾 등록 완료</button>
@@ -359,6 +364,13 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
           <div style="font-size:13px; color:var(--muted); line-height:1.6">
             집회 당일 <strong style="color:white">체크인</strong> 탭에서 버튼 한 번만 누르면<br>
             GPS로 현장 확인 후 자동 참석 처리됩니다.
+          </div>
+        </div>
+        <div class="card" style="margin:0 0 10px; background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.3)">
+          <div style="font-size:13px; color:#FCD34D; font-weight:700; margin-bottom:4px">⚠️ 1기기 1회 원칙</div>
+          <div style="font-size:12px; color:var(--muted); line-height:1.6">
+            한 기기에서 같은 집회에 <strong style="color:white">1회만</strong> 체크인 가능합니다.<br>
+            정보를 바꿔도 동일 기기에서 중복 체크인은 차단됩니다.
           </div>
         </div>
         <button class="btn btn-ghost" onclick="editProfile()">✏️ 정보 수정</button>
@@ -556,19 +568,25 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
         <div class="stat-card"><div class="stat-num" id="st-branch">—</div><div class="stat-label">지회 수</div></div>
       </div>
 
-      <!-- 참석자 목록 -->
+      <!-- 참석자 다운로드 -->
       <div class="card">
-        <div class="clabel">👥 참석자 목록</div>
-        <div class="search-wrap">
-          <input type="text" id="admin-search" placeholder="이름·사번·지회 검색" oninput="filterList()">
+        <div class="clabel">📥 참석자 명단 다운로드</div>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6">
+          참석자 명단을 CSV 파일로 내보냅니다.<br>엑셀에서 바로 열 수 있습니다.
+        </p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn btn-red" onclick="loadAndExportCSV()">📥 전체 명단 다운로드</button>
         </div>
-        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick="loadAttendees()">🔄 새로고침</button>
-          <button class="btn btn-ghost btn-sm" onclick="exportCSV()">📥 CSV</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px">
+          <div class="field" style="flex:1; margin-bottom:0">
+            <label>집회별 다운로드</label>
+            <select id="export-event-sel" style="background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none; width:100%">
+              <option value="">-- 전체 --</option>
+            </select>
+          </div>
         </div>
-        <ul class="a-list" id="attendee-list">
-          <div class="empty"><div class="ei">⏳</div><p>로딩 중...</p></div>
-        </ul>
+        <button class="btn btn-ghost" onclick="loadAndExportCSV(true)" style="margin-top:10px">📥 선택 집회만 다운로드</button>
+        <div class="toast" id="export-toast" style="margin-top:10px"></div>
       </div>
 
       <div style="padding:0 16px 16px; display:flex; flex-direction:column; gap:10px">
@@ -643,6 +661,16 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
           <strong>위 URL 입력 → 저장 → 연결 테스트</strong>
         </div>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="clabel">🏢 지부 목록</div>
+      <div style="display:flex; gap:8px; margin-bottom:12px">
+        <input type="text" id="new-jiboo-inp" placeholder="지부명 입력"
+          style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none">
+        <button class="btn btn-red btn-sm" onclick="addJibooUI()">추가</button>
+      </div>
+      <ul id="jiboo-list" style="list-style:none"></ul>
     </div>
 
     <div class="card">
@@ -725,6 +753,9 @@ function respond(e) {
     else if (action==='getBranches')    result = getBranches();
     else if (action==='addBranch')      result = addBranch(b.name);
     else if (action==='removeBranch')   result = removeBranch(b.name);
+    else if (action==='getJiboo')      result = getJiboo();
+    else if (action==='addJiboo')      result = addJiboo(b.name);
+    else if (action==='removeJiboo')   result = removeJiboo(b.name);
     else result = { ok:false, msg:'Unknown: '+action };
   } catch(err) {
     result = { ok:false, msg:err.toString() };
@@ -733,18 +764,21 @@ function respond(e) {
 }
 
 function checkin(d) {
-  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지회','집회명','날짜','시간','위도','경도','거리(m)']);
+  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지부','지회','집회명','날짜','시간','위도','경도','거리(m)','기기ID']);
   const rows = sh.getDataRange().getValues();
   for (let i=1;i<rows.length;i++) {
-    if (String(rows[i][2])===String(d.empno) && rows[i][5]===d.eventName)
-      return { ok:false, dup:true, msg:'이미 체크인 기록이 있습니다.' };
+    const row = rows[i];
+    if (row[6] !== d.eventName) continue;
+    // 기기ID 기준으로만 중복 차단 (1기기 = 1회 체크인)
+    if (d.deviceId && String(row[12]) === String(d.deviceId))
+      return { ok:false, dup:true, dupType:'device', msg:'이 기기에서 이미 체크인되었습니다.' };
   }
   const now = new Date();
   sh.appendRow([
-    now.toISOString(), d.name, d.empno, d.dept, d.branch, d.eventName,
+    now.toISOString(), d.name, d.empno, d.dept, d.jiboo||'', d.branch, d.eventName,
     Utilities.formatDate(now,'Asia/Seoul','yyyy-MM-dd'),
     Utilities.formatDate(now,'Asia/Seoul','HH:mm:ss'),
-    d.lat||'', d.lng||'', d.distance||''
+    d.lat||'', d.lng||'', d.distance||'', d.deviceId||''
   ]);
   return { ok:true };
 }
@@ -793,16 +827,18 @@ function removeEvent(name) {
 }
 
 function getAttendees(p) {
-  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지회','집회명','날짜','시간','위도','경도','거리(m)']);
+  const sh = getSheet(SH_ATTEND, ['타임스탬프','이름','사번','소속','지부','지회','집회명','날짜','시간','위도','경도','거리(m)']);
   const rows = sh.getDataRange().getValues().slice(1);
   let data = rows.filter(r=>r[0]).map(r=>({
     timestamp:r[0],name:r[1],empno:r[2],dept:r[3],
-    branch:r[4],eventName:r[5],dateStr:r[6],timeStr:r[7],
-    lat:r[8],lng:r[9],distance:r[10]
+    jiboo:r[4],branch:r[5],eventName:r[6],dateStr:r[7],timeStr:r[8],
+    lat:r[9],lng:r[10],distance:r[11]
   }));
   if (p&&p.empno) data=data.filter(r=>String(r.empno)===String(p.empno));
   return {ok:true, attendees:data.reverse()};
 }
+
+const SH_JIBOO = '지부목록';
 
 function getBranches() {
   const sh = getSheet(SH_BRANCHES,['지회명']);
@@ -824,6 +860,27 @@ function removeBranch(name) {
   const rows=sh.getDataRange().getValues();
   for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}
   return {ok:true};
+}
+function getJiboo() {
+  const sh = getSheet(SH_JIBOO,['지부명']);
+  const rows = sh.getDataRange().getValues().slice(1).filter(r=>r[0]);
+  if (!rows.length) {
+    const def=['부산지부','경남지부','울산지부','본부직속'];
+    def.forEach(b=>sh.appendRow([b]));
+    return {ok:true, jiboos:def};
+  }
+  return {ok:true, jiboos:rows.map(r=>r[0])};
+}
+function addJiboo(name) {
+  if(!name) return {ok:false};
+  getSheet(SH_JIBOO,['지부명']).appendRow([name]);
+  return {ok:true};
+}
+function removeJiboo(name) {
+  const sh=getSheet(SH_JIBOO,['지부명']);
+  const rows=sh.getDataRange().getValues();
+  for(let i=rows.length-1;i>=1;i--){if(rows[i][0]===name){sh.deleteRow(i+1);break;}}
+  return {ok:true};
 }`;
 
 // ═══════════════════════════
@@ -837,6 +894,7 @@ let events      = LS('union_events')   || [];
 let branches    = LS('union_branches') || ['1지회','2지회','3지회','4지회','5지회','본조','직속'];
 let activeRally = LS('union_active_rally'); // { eventName, locName, lat, lng, radius }
 let allAttendees = [];
+let jiboos = JSON.parse(localStorage.getItem('union_jiboos')||'null') || ['부산지부','경남지부','울산지부','본부직속'];
 let userLat = null, userLng = null;
 let gpsWatcher = null;
 let checkinDone = false;
@@ -859,12 +917,13 @@ async function api(action, data={}) {
 window.addEventListener('load', () => {
   document.getElementById('url-inp').value = SCRIPT_URL;
   initMember();
+  renderJibooSelect();
   renderBranchSelect();
   renderBranchList();
   renderEventPills();
   renderAdminEventSelect();
   checkConn();
-  if (SCRIPT_URL) { loadBranches(); loadEvents(); loadActiveRally(); }
+  if (SCRIPT_URL) { loadBranches(); loadJiboos(); loadEvents(); loadActiveRally(); }
 });
 
 // ═══════════════════════════
@@ -913,9 +972,10 @@ function saveProfile() {
   const name=document.getElementById('inp-name').value.trim();
   const empno=document.getElementById('inp-empno').value.trim();
   const dept=document.getElementById('inp-dept').value.trim();
+  const jiboo=document.getElementById('inp-jiboo').value;
   const branch=document.getElementById('inp-branch').value;
-  if (!name||!empno||!dept||!branch) { showToast('save-msg','err','모든 항목을 입력해 주세요.'); return; }
-  profile={name,empno,dept,branch};
+  if (!name||!empno||!dept||!jiboo||!branch) { showToast('save-msg','err','모든 항목을 입력해 주세요.'); return; }
+  profile={name,empno,dept,jiboo,branch};
   LS('union_profile',profile);
   showToast('save-msg','ok','✅ 등록 완료!');
   setTimeout(()=>{
@@ -929,7 +989,7 @@ function renderProfile() {
   document.getElementById('d-name').textContent  = profile.name;
   document.getElementById('d-empno').textContent = '사번: '+profile.empno;
   document.getElementById('d-dept').textContent  = '소속: '+profile.dept;
-  document.getElementById('d-branch').textContent = profile.branch;
+  document.getElementById('d-branch').textContent = (profile.jiboo||'') + ' ' + (profile.branch||'');
 }
 
 function editProfile() {
@@ -939,6 +999,7 @@ function editProfile() {
     document.getElementById('inp-name').value   = profile.name;
     document.getElementById('inp-empno').value  = profile.empno;
     document.getElementById('inp-dept').value   = profile.dept;
+    document.getElementById('inp-jiboo').value  = profile.jiboo||'';
     document.getElementById('inp-branch').value = profile.branch;
   }
 }
@@ -1087,14 +1148,17 @@ async function doCheckin() {
   try {
     const r = await api('checkin', {
       ...profile,
+      jiboo: profile.jiboo||'',
       eventName: activeRally.eventName,
       lat: userLat.toFixed(6),
       lng: userLng.toFixed(6),
-      distance: Math.round(dist)
+      distance: Math.round(dist),
+      deviceId: getDeviceId()
     });
     if (r.dup) {
-      showToast('ci-toast','info',`⚠️ 이미 "${activeRally.eventName}" 체크인 기록이 있습니다.`);
-      setBtnState('done','✅','이미 체크인됨','');
+      showToast('ci-toast','info','⚠️ 이 기기에서 이미 체크인되었습니다.
+1기기 1회만 가능합니다.');
+      setBtnState('done','✅','이미 체크인됨','이 기기는 이미 참석 처리되었습니다');
       checkinDone=true;
     } else if (r.ok) {
       checkinDone=true;
@@ -1220,7 +1284,7 @@ function adminLogin() {
   if (document.getElementById('admin-pw').value===ADMIN_PW) {
     document.getElementById('admin-lock').style.display='none';
     document.getElementById('admin-dash').style.display='block';
-    loadAttendees(); loadEvents(); renderAdminEventSelect(); renderEventPills();
+    loadEvents(); renderAdminEventSelect(); renderEventPills(); renderJibooList(); renderBranchList(); updateStats();
     loadActiveRally();
   } else {
     showToast('admin-pw-msg','err','비밀번호가 틀렸습니다.');
@@ -1308,10 +1372,15 @@ async function loadEvents() {
 }
 
 function renderAdminEventSelect() {
-  const sel = document.getElementById('admin-event-sel');
-  sel.innerHTML='<option value="">-- 집회 선택 --</option>';
-  events.forEach(e=>{ const o=document.createElement('option'); o.value=e; o.textContent=e; sel.appendChild(o); });
-  if (activeRally) sel.value=activeRally.eventName;
+  ['admin-event-sel','export-event-sel'].forEach(id => {
+    const sel=document.getElementById(id);
+    if (!sel) return;
+    const cur=sel.value;
+    sel.innerHTML='<option value="">-- 전체 --</option>';
+    events.forEach(e=>{ const o=document.createElement('option'); o.value=e; o.textContent=e; sel.appendChild(o); });
+    if (id==='admin-event-sel' && activeRally) sel.value=activeRally.eventName;
+    else if (cur) sel.value=cur;
+  });
 }
 
 function renderEventPills() {
@@ -1341,31 +1410,10 @@ async function removeEvent(i) {
 //  ATTENDEES
 // ═══════════════════════════
 async function loadAttendees() {
-  const ul=document.getElementById('attendee-list');
-  ul.innerHTML='<div class="empty"><div class="ei">⏳</div><p>불러오는 중...</p></div>';
   try {
     const r=await api('getAttendees',{});
-    allAttendees=r.attendees||[]; filterList(); updateStats();
-  } catch(e) {
-    ul.innerHTML=`<div class="empty"><div class="ei">❌</div><p>${e.message==='NO_URL'?'URL 미설정':e.message}</p></div>`;
-  }
-}
-
-function filterList() {
-  const q=(document.getElementById('admin-search')?.value||'').toLowerCase();
-  const filtered=allAttendees.filter(a=>!q||(a.name||'').includes(q)||(a.empno||'').toString().includes(q)||(a.branch||'').includes(q)||(a.eventName||'').includes(q));
-  const ul=document.getElementById('attendee-list');
-  if (!filtered.length) { ul.innerHTML='<div class="empty"><div class="ei">📭</div><p>참석자가 없습니다</p></div>'; return; }
-  ul.innerHTML=filtered.map(a=>`
-    <li class="a-item">
-      <div>
-        <div class="a-name">${a.name}</div>
-        <div class="a-meta">사번: ${a.empno} | ${a.dept}</div>
-        <span class="a-badge">${a.branch}</span>
-        <div class="a-meta" style="margin-top:4px">${a.eventName}${a.distance?' · '+a.distance+'m':''}</div>
-      </div>
-      <div class="a-time">${a.timeStr||''}<br><span style="color:rgba(255,255,255,0.25);font-size:10px">${a.dateStr||''}</span></div>
-    </li>`).join('');
+    allAttendees=r.attendees||[]; updateStats();
+  } catch {}
 }
 
 function updateStats() {
@@ -1375,14 +1423,34 @@ function updateStats() {
   document.getElementById('st-branch').textContent = new Set(allAttendees.map(a=>a.branch)).size;
 }
 
-function exportCSV() {
-  const h=['이름','사번','소속','지회','집회명','날짜','시간','거리(m)'];
-  const rows=allAttendees.map(a=>[a.name,a.empno,a.dept,a.branch,a.eventName,a.dateStr,a.timeStr,a.distance||'']);
+function exportCSV(data) {
+  const h=['이름','사번','소속','지부','지회','집회명','날짜','시간','거리(m)'];
+  const rows=(data||allAttendees).map(a=>[a.name,a.empno,a.dept,a.jiboo||'',a.branch,a.eventName,a.dateStr,a.timeStr,a.distance||'']);
   const csv=[h,...rows].map(r=>r.map(v=>`"${v||''}"`).join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download=`집회참석자_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'-')}.csv`;
   a.click();
+}
+
+async function loadAndExportCSV(byEvent=false) {
+  const toast = document.getElementById('export-toast');
+  showToast('export-toast','loading','⏳ 데이터 불러오는 중...');
+  try {
+    const r = await api('getAttendees',{});
+    allAttendees = r.attendees||[];
+    let data = allAttendees;
+    if (byEvent) {
+      const sel = document.getElementById('export-event-sel').value;
+      if (sel) data = allAttendees.filter(a=>a.eventName===sel);
+    }
+    if (!data.length) { showToast('export-toast','info','참석자 데이터가 없습니다.'); return; }
+    exportCSV(data);
+    showToast('export-toast','ok',`✅ ${data.length}명 데이터를 다운로드했습니다.`);
+    updateStats();
+  } catch(e) {
+    showToast('export-toast','err','❌ 실패: '+e.message);
+  }
 }
 
 // ═══════════════════════════
@@ -1393,6 +1461,47 @@ async function loadBranches() {
     const r=await api('getBranches');
     if (r.ok&&r.branches.length) { branches=r.branches; LS('union_branches',branches); renderBranchSelect(); renderBranchList(); }
   } catch {}
+}
+
+async function loadJiboos() {
+  try {
+    const r=await api('getJiboo');
+    if (r.ok&&r.jiboos.length) { jiboos=r.jiboos; localStorage.setItem('union_jiboos',JSON.stringify(jiboos)); renderJibooSelect(); renderJibooList(); }
+  } catch {}
+}
+
+function renderJibooSelect() {
+  const sel=document.getElementById('inp-jiboo');
+  if (!sel) return;
+  const cur=profile?.jiboo||'';
+  sel.innerHTML='<option value="">-- 지부 선택 --</option>';
+  jiboos.forEach(b=>{ const o=document.createElement('option'); o.value=b; o.textContent=b; sel.appendChild(o); });
+  if (cur) sel.value=cur;
+}
+
+function renderJibooList() {
+  const ul=document.getElementById('jiboo-list');
+  if (!ul) return;
+  ul.innerHTML=jiboos.map((b,i)=>`
+    <li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px">
+      <span>${b}</span>
+      <button onclick="removeJibooUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button>
+    </li>`).join('');
+}
+
+async function addJibooUI() {
+  const val=document.getElementById('new-jiboo-inp').value.trim();
+  if (!val||jiboos.includes(val)) return;
+  jiboos.push(val); localStorage.setItem('union_jiboos',JSON.stringify(jiboos));
+  renderJibooSelect(); renderJibooList();
+  document.getElementById('new-jiboo-inp').value='';
+  if (SCRIPT_URL) { try { await api('addJiboo',{name:val}); } catch {} }
+}
+
+async function removeJibooUI(i) {
+  const name=jiboos[i]; jiboos.splice(i,1); localStorage.setItem('union_jiboos',JSON.stringify(jiboos));
+  renderJibooSelect(); renderJibooList();
+  if (SCRIPT_URL) { try { await api('removeJiboo',{name}); } catch {} }
 }
 
 function renderBranchSelect() {
