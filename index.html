@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>부산지하철노동조합 - 집회 참석 체크인</title>
 <style>
@@ -237,8 +240,8 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
       <div class="clbl">📝 조합원 정보</div>
       <div class="fld"><label>이름</label><input type="text" id="inp-name" placeholder="홍길동"></div>
       <div class="fld"><label>사번</label><input type="text" id="inp-empno" placeholder="123456" inputmode="numeric"></div>
-      <div class="fld"><label>소속 부서</label><input type="text" id="inp-dept" placeholder="운전직 / 역무직 / 기술직 / 사무직"></div>
-      <div class="fld"><label>소속 지부</label><select id="inp-jiboo"><option value="">-- 지부 선택 --</option></select></div>
+
+      <div class="fld"><label>소속 지부</label><select id="inp-jiboo" onchange="updateBranchByJiboo(this.value)"><option value="">-- 지부 선택 --</option></select></div>
       <div class="fld"><label>소속 지회</label><select id="inp-branch"><option value="">-- 지회 선택 --</option></select></div>
       <button class="btn btn-red" onclick="saveProfile()">💾 등록 완료</button>
       <div class="toast" id="save-msg"></div>
@@ -468,21 +471,11 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
   </div>
 
   <div class="card">
-    <div class="clbl">🏢 지부 목록</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <input type="text" id="new-jiboo-inp" placeholder="지부명 입력" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none">
-      <button class="btn btn-red btn-sm" onclick="addJibooUI()">추가</button>
+    <div class="clbl">🏢 지부·지회 구조</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.7">
+      지부를 선택하면 해당 지부 산하 지회만 자동으로 표시됩니다.
     </div>
-    <ul id="jiboo-list" style="list-style:none"></ul>
-  </div>
-
-  <div class="card">
-    <div class="clbl">🏢 지회 목록</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <input type="text" id="new-branch-inp" placeholder="지회명 입력" style="flex:1;background:var(--s3);border:1px solid var(--b2);border-radius:10px;padding:11px 12px;color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none">
-      <button class="btn btn-red btn-sm" onclick="addBranchUI()">추가</button>
-    </div>
-    <ul id="branch-list" style="list-style:none"></ul>
+    <ul id="jiboo-branch-preview" style="list-style:none"></ul>
   </div>
 
   <div class="card">
@@ -541,8 +534,16 @@ const LS = (k,v) => v!==undefined ? localStorage.setItem(k,JSON.stringify(v)) : 
 let ADMIN_PW   = localStorage.getItem('ucfg_pw') || 'union2026';
 let profile    = LS('union_profile');
 let events     = LS('union_events')   || [];
-let branches   = LS('union_branches') || ['1지회','2지회','3지회','4지회','5지회','본조','직속'];
-let jiboos     = LS('union_jiboos')   || ['부산지부','경남지부','울산지부','본부직속'];
+let branches   = [];
+// 지부-지회 연동 구조
+const JIBOO_BRANCH_MAP = {
+  '기술지부': ['건축지회','궤도지회','기계지회','신호지회','전기지회','전자지회','토목지회','통신지회','기술공무지회'],
+  '서비스지부': ['노포서비스','신평서비스','부암서비스','대저서비스','차량서비스','기술콜센터'],
+  '역무지부': ['노포역무지회','서면역무지회','남포역무지회','신평역무지회','장산역무지회','가야역무지회','사상역무지회','호포역무지회','대저역무지회'],
+  '승무지부': ['노포승무','신평승무','광안승무','대저승무','안평승무'],
+  '차량지부': ['노포차량','신평차량','호포차량','대저차량','안평차량','차량공무']
+};
+let jiboos = Object.keys(JIBOO_BRANCH_MAP);
 let activeRally= LS('union_rally');
 let allAttendees=[];
 let userLat=null, userLng=null, gpsWatch=null, ciDone=false;
@@ -613,11 +614,11 @@ function initMember() {
 }
 
 function saveProfile() {
-  const name=v('inp-name'), empno=v('inp-empno'), dept=v('inp-dept');
+  const name=v('inp-name'), empno=v('inp-empno');
   const jiboo=document.getElementById('inp-jiboo').value;
   const branch=document.getElementById('inp-branch').value;
-  if (!name||!empno||!dept||!jiboo||!branch) { showToast('save-msg','err','모든 항목을 입력해 주세요.'); return; }
-  profile={name,empno,dept,jiboo,branch};
+  if (!name||!empno||!jiboo||!branch) { showToast('save-msg','err','모든 항목을 입력해 주세요.'); return; }
+  profile={name,empno,dept:'',jiboo,branch};
   LS('union_profile',profile);
   showToast('save-msg','ok','✅ 등록 완료!');
   setTimeout(()=>{ hide('sec-form'); show('sec-profile'); renderProfile(); },700);
@@ -626,16 +627,16 @@ function saveProfile() {
 function renderProfile() {
   setText('d-name', profile.name);
   setText('d-empno','사번: '+profile.empno);
-  setText('d-dept', '소속: '+profile.dept);
-  setText('d-branch',(profile.jiboo||'')+' '+( profile.branch||''));
+  setText('d-dept', '');
+  setText('d-branch',(profile.jiboo||'')+' '+(profile.branch||''));
 }
 
 function editProfile() {
   hide('sec-profile'); show('sec-form');
   if (profile) {
     set('inp-name',profile.name); set('inp-empno',profile.empno);
-    set('inp-dept',profile.dept);
     document.getElementById('inp-jiboo').value=profile.jiboo||'';
+    updateBranchByJiboo(profile.jiboo||'');
     document.getElementById('inp-branch').value=profile.branch||'';
   }
 }
@@ -941,52 +942,52 @@ async function removeEvent(i) {
 //  BRANCHES / JIBOOS
 // ══════════════════════════════
 async function loadBranches() {
-  try { const r=await api('getBranches'); if(r.ok&&r.branches.length){branches=r.branches;LS('union_branches',branches);renderBranchSel();renderBranchList();} } catch {}
+  // 지부-지회 연동 구조 사용 (서버 연동 불필요)
 }
 async function loadJiboos() {
-  try { const r=await api('getJiboo'); if(r.ok&&r.jiboos.length){jiboos=r.jiboos;LS('union_jiboos',jiboos);renderJibooSel();renderJibooList();} } catch {}
+  // 지부-지회 연동 구조 사용 (서버 연동 불필요)
 }
 
 function renderBranchSel() {
   const s=document.getElementById('inp-branch'); if(!s) return;
-  const c=profile?.branch||''; s.innerHTML='<option value="">-- 지회 선택 --</option>';
-  branches.forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;s.appendChild(o);}); if(c) s.value=c;
+  s.innerHTML='<option value="">-- 지회 선택 --</option>';
 }
 function renderJibooSel() {
   const s=document.getElementById('inp-jiboo'); if(!s) return;
   const c=profile?.jiboo||''; s.innerHTML='<option value="">-- 지부 선택 --</option>';
-  jiboos.forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;s.appendChild(o);}); if(c) s.value=c;
+  jiboos.forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;s.appendChild(o);});
+  if(c){ s.value=c; updateBranchByJiboo(c); }
+  s.onchange = function() { updateBranchByJiboo(this.value); };
+}
+
+function updateBranchByJiboo(jiboo) {
+  const s=document.getElementById('inp-branch'); if(!s) return;
+  const cur=s.value;
+  s.innerHTML='<option value="">-- 지회 선택 --</option>';
+  const list = JIBOO_BRANCH_MAP[jiboo] || [];
+  list.forEach(b=>{const o=document.createElement('option');o.value=b;o.textContent=b;s.appendChild(o);});
+  if(cur && list.includes(cur)) s.value=cur;
+  s.disabled = list.length===0;
 }
 
 function renderBranchList() {
-  const ul=document.getElementById('branch-list'); if(!ul) return;
-  ul.innerHTML=branches.map((b,i)=>`<li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1);font-size:14px"><span>${b}</span><button onclick="removeBranchUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button></li>`).join('');
+  // 지부-지회 연동 구조 사용
 }
 function renderJibooList() {
-  const ul=document.getElementById('jiboo-list'); if(!ul) return;
-  ul.innerHTML=jiboos.map((b,i)=>`<li style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--b1);font-size:14px"><span>${b}</span><button onclick="removeJibooUI(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">✕</button></li>`).join('');
+  const ul=document.getElementById('jiboo-branch-preview'); if(!ul) return;
+  ul.innerHTML=Object.entries(JIBOO_BRANCH_MAP).map(([j,bs])=>`
+    <li style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--red2);margin-bottom:6px">📌 ${j}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        ${bs.map(b=>`<span style="background:var(--s3);border:1px solid var(--b2);border-radius:20px;padding:3px 10px;font-size:12px">${b}</span>`).join('')}
+      </div>
+    </li>`).join('');
 }
 
-async function addBranchUI() {
-  const val=v('new-branch-inp'); if(!val||branches.includes(val)) return;
-  branches.push(val); LS('union_branches',branches); renderBranchSel(); renderBranchList();
-  document.getElementById('new-branch-inp').value='';
-  try { await api('addBranch',{name:val}); } catch {}
-}
-async function removeBranchUI(i) {
-  const name=branches[i]; branches.splice(i,1); LS('union_branches',branches); renderBranchSel(); renderBranchList();
-  try { await api('removeBranch',{name}); } catch {}
-}
-async function addJibooUI() {
-  const val=v('new-jiboo-inp'); if(!val||jiboos.includes(val)) return;
-  jiboos.push(val); LS('union_jiboos',jiboos); renderJibooSel(); renderJibooList();
-  document.getElementById('new-jiboo-inp').value='';
-  try { await api('addJiboo',{name:val}); } catch {}
-}
-async function removeJibooUI(i) {
-  const name=jiboos[i]; jiboos.splice(i,1); LS('union_jiboos',jiboos); renderJibooSel(); renderJibooList();
-  try { await api('removeJiboo',{name}); } catch {}
-}
+function addBranchUI() {}
+function removeBranchUI() {}
+function addJibooUI() {}
+function removeJibooUI() {}
 
 // ══════════════════════════════
 //  SETTING
@@ -1039,6 +1040,22 @@ function setText(id,txt){const e=document.getElementById(id);if(e)e.textContent=
 function set(id,val){const e=document.getElementById(id);if(e)e.value=val;}
 function v(id){const e=document.getElementById(id);return e?(e.value||'').trim():'';}
 function showToast(id,type,msg){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.className='toast '+type;e.style.display='block';}
+</script>
+
+<script>
+// 캐시 강제 삭제 (아이폰 사파리 포함)
+if ('caches' in window) {
+  caches.keys().then(names => names.forEach(name => caches.delete(name)));
+}
+// 버전 체크 - 새 버전이면 강제 새로고침
+const APP_VERSION = '2026051201';
+const saved = localStorage.getItem('app_version');
+if (saved && saved !== APP_VERSION) {
+  localStorage.setItem('app_version', APP_VERSION);
+  window.location.reload(true);
+} else {
+  localStorage.setItem('app_version', APP_VERSION);
+}
 </script>
 </body>
 </html>
