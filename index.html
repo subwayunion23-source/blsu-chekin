@@ -487,7 +487,41 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
             <option value="2000">2km</option>
           </select>
         </div>
-        <button class="btn btn-red" onclick="setRallyLocation()">📍 현재 위치로 집회 장소 설정</button>
+        <!-- 장소 설정 방식 선택 -->
+        <div style="display:flex; gap:8px; margin-bottom:10px">
+          <button id="method-gps" onclick="setLocMethod('gps')"
+            style="flex:1; padding:10px 6px; border-radius:10px; border:2px solid var(--red); background:var(--red); color:white; font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:700; cursor:pointer">
+            📱 현장 GPS (스마트폰)
+          </button>
+          <button id="method-map" onclick="setLocMethod('map')"
+            style="flex:1; padding:10px 6px; border-radius:10px; border:2px solid var(--border2); background:var(--surface3); color:var(--muted); font-family:'Noto Sans KR',sans-serif; font-size:13px; font-weight:700; cursor:pointer">
+            🗺 주소 검색 (PC)
+          </button>
+        </div>
+        <div id="loc-gps">
+          <button class="btn btn-red" onclick="setRallyLocation()">📍 현재 위치로 집회 장소 설정</button>
+        </div>
+        <div id="loc-map" style="display:none">
+          <div class="field">
+            <label>주소 검색</label>
+            <div style="display:flex; gap:8px">
+              <input type="text" id="addr-search" placeholder="예: 부산시청"
+                style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:11px 12px; color:white; font-family:'Noto Sans KR',sans-serif; font-size:14px; outline:none"
+                onkeydown="if(event.key==='Enter')searchAddress()">
+              <button class="btn btn-red btn-sm" onclick="searchAddress()">검색</button>
+            </div>
+          </div>
+          <div id="addr-results" style="margin-bottom:10px"></div>
+          <div class="field" style="display:none" id="coord-manual-wrap">
+            <label>또는 좌표 직접 입력 (<a href="https://maps.google.com" target="_blank" style="color:var(--red2)">구글지도</a>에서 우클릭 → 좌표 복사)</label>
+            <div style="display:flex; gap:8px">
+              <input type="text" id="manual-lat" placeholder="위도 (예: 35.1795)" style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:10px 12px; color:white; font-family:'IBM Plex Mono',monospace; font-size:13px; outline:none">
+              <input type="text" id="manual-lng" placeholder="경도 (예: 129.0756)" style="flex:1; background:var(--surface3); border:1px solid var(--border2); border-radius:10px; padding:10px 12px; color:white; font-family:'IBM Plex Mono',monospace; font-size:13px; outline:none">
+            </div>
+            <button class="btn btn-red" style="margin-top:8px" onclick="setRallyManual()">📍 이 좌표로 집회 장소 설정</button>
+          </div>
+          <button onclick="document.getElementById('coord-manual-wrap').style.display='block'" class="btn btn-ghost btn-sm" style="margin-top:0">좌표 직접 입력</button>
+        </div>
         <div class="toast" id="rally-toast"></div>
 
         <!-- 현재 활성 집회 표시 -->
@@ -789,7 +823,7 @@ function removeBranch(name) {
 //  STATE
 // ═══════════════════════════
 const LS = (k,v) => v!==undefined ? localStorage.setItem(k,JSON.stringify(v)) : JSON.parse(localStorage.getItem(k)||'null');
-let SCRIPT_URL  = localStorage.getItem('ucfg_url') || '';
+let SCRIPT_URL  = localStorage.getItem('ucfg_url') || 'https://script.google.com/macros/s/AKfycbzOihYea_p18Q8gtIjrbup4laWBGmUo8Guvr6dg6vhIydqL06cyyrllnzPk6vMx7fx6/exec';
 let ADMIN_PW    = localStorage.getItem('ucfg_pw')  || 'union2026';
 let profile     = LS('union_profile');
 let events      = LS('union_events')   || [];
@@ -1101,6 +1135,79 @@ async function loadMyHistory() {
 // ═══════════════════════════
 //  ADMIN
 // ═══════════════════════════
+// 장소 설정 방식 전환
+function setLocMethod(method) {
+  document.getElementById('loc-gps').style.display = method==='gps' ? 'block' : 'none';
+  document.getElementById('loc-map').style.display = method==='map' ? 'block' : 'none';
+  const gpsBtn = document.getElementById('method-gps');
+  const mapBtn = document.getElementById('method-map');
+  if (method==='gps') {
+    gpsBtn.style.background='var(--red)'; gpsBtn.style.borderColor='var(--red)'; gpsBtn.style.color='white';
+    mapBtn.style.background='var(--surface3)'; mapBtn.style.borderColor='var(--border2)'; mapBtn.style.color='var(--muted)';
+  } else {
+    mapBtn.style.background='var(--red)'; mapBtn.style.borderColor='var(--red)'; mapBtn.style.color='white';
+    gpsBtn.style.background='var(--surface3)'; gpsBtn.style.borderColor='var(--border2)'; gpsBtn.style.color='var(--muted)';
+  }
+}
+
+// 주소 검색 (Nominatim 무료 API)
+async function searchAddress() {
+  const q = document.getElementById('addr-search').value.trim();
+  const res = document.getElementById('addr-results');
+  if (!q) return;
+  res.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:8px 0">검색 중...</div>';
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q+' 부산')}&format=json&limit=5&accept-language=ko`);
+    const data = await r.json();
+    if (!data.length) { res.innerHTML='<div style="font-size:13px;color:#EF9A9A;padding:8px 0">검색 결과가 없습니다. 더 구체적인 주소로 검색해 보세요.</div>'; return; }
+    res.innerHTML = data.map(d => `
+      <div onclick="selectAddr('${d.lat}','${d.lon}','${d.display_name.replace(/'/g,'\'')}')"
+        style="padding:10px 12px; background:var(--surface3); border:1px solid var(--border2); border-radius:8px; margin-bottom:6px; cursor:pointer; font-size:13px; line-height:1.5">
+        <div style="font-weight:700; color:white; margin-bottom:2px">${d.display_name.split(',')[0]}</div>
+        <div style="color:var(--muted); font-size:11px; font-family:'IBM Plex Mono',monospace">${parseFloat(d.lat).toFixed(5)}, ${parseFloat(d.lon).toFixed(5)}</div>
+      </div>`).join('');
+  } catch { res.innerHTML='<div style="font-size:13px;color:#EF9A9A;padding:8px 0">검색 실패. 좌표를 직접 입력해 주세요.</div>'; }
+}
+
+async function selectAddr(lat, lng, name) {
+  const eventName = document.getElementById('admin-event-sel').value;
+  const locName   = document.getElementById('rally-loc-name').value.trim() || name.split(',')[0];
+  const radius    = document.getElementById('rally-radius').value;
+  if (!eventName) { showToast('rally-toast','err','집회를 먼저 선택해 주세요.'); return; }
+  showToast('rally-toast','loading','⏳ 집회 장소 등록 중...');
+  try {
+    const r = await api('setActiveRally',{eventName, locName, lat:parseFloat(lat), lng:parseFloat(lng), radius:parseInt(radius)});
+    if (r.ok) {
+      activeRally={eventName,locName,lat:parseFloat(lat),lng:parseFloat(lng),radius:parseInt(radius)};
+      LS('union_active_rally',activeRally);
+      showToast('rally-toast','ok',`✅ "${eventName}" 집회가 활성화되었습니다!`);
+      renderActiveRallyInfo();
+      document.getElementById('addr-results').innerHTML='';
+    }
+  } catch(e) { showToast('rally-toast','err','❌ 설정 실패: '+e.message); }
+}
+
+async function setRallyManual() {
+  const lat = parseFloat(document.getElementById('manual-lat').value);
+  const lng = parseFloat(document.getElementById('manual-lng').value);
+  const eventName = document.getElementById('admin-event-sel').value;
+  const locName   = document.getElementById('rally-loc-name').value.trim();
+  const radius    = document.getElementById('rally-radius').value;
+  if (!eventName) { showToast('rally-toast','err','집회를 먼저 선택해 주세요.'); return; }
+  if (!locName)   { showToast('rally-toast','err','장소명을 입력해 주세요.'); return; }
+  if (isNaN(lat)||isNaN(lng)) { showToast('rally-toast','err','올바른 좌표를 입력해 주세요.'); return; }
+  showToast('rally-toast','loading','⏳ 집회 장소 등록 중...');
+  try {
+    const r = await api('setActiveRally',{eventName,locName,lat,lng,radius:parseInt(radius)});
+    if (r.ok) {
+      activeRally={eventName,locName,lat,lng,radius:parseInt(radius)};
+      LS('union_active_rally',activeRally);
+      showToast('rally-toast','ok',`✅ "${eventName}" 집회가 활성화되었습니다!`);
+      renderActiveRallyInfo();
+    }
+  } catch(e) { showToast('rally-toast','err','❌ 설정 실패: '+e.message); }
+}
+
 function adminLogin() {
   if (document.getElementById('admin-pw').value===ADMIN_PW) {
     document.getElementById('admin-lock').style.display='none';
