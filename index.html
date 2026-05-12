@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>부산지하철노동조합 집회 체크인</title>
+<title>부산지하철노동조합 - 집회 참석 체크인</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
 :root {
-  --red: #C62828;
-  --red2: #E53935;
-  --red-dim: rgba(198,40,40,0.12);
+  --red: #CC0000;
+  --red2: #E00000;
+  --red-dim: rgba(204,0,0,0.12);
   --black: #0D0D0D;
   --surface: #161616;
   --surface2: #1F1F1F;
@@ -271,6 +271,7 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
 
 <!-- 성공 오버레이 -->
 <div class="success-overlay" id="success-overlay">
+  <img src="data:image/jpeg;base64,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" style="width:64px; height:64px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:3px solid rgba(255,255,255,0.3)">
   <div class="s-circle">✅</div>
   <div class="s-name" id="so-name">—</div>
   <div class="s-branch" id="so-branch">—</div>
@@ -282,10 +283,10 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
 <!-- 헤더 -->
 <header class="header">
   <div class="header-logo">
-    <div class="header-fist">✊</div>
+    <img src="data:image/jpeg;base64,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" style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.3)">
     <div>
       <div class="header-title">부산지하철노동조합</div>
-      <div class="header-sub">RALLY CHECK-IN</div>
+      <div class="header-sub">집회 참석 체크인</div>
     </div>
   </div>
   <div class="conn-pill">
@@ -570,7 +571,8 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
         </ul>
       </div>
 
-      <div style="padding:0 16px 16px">
+      <div style="padding:0 16px 16px; display:flex; flex-direction:column; gap:10px">
+        <button class="btn btn-ghost" onclick="showTab('setting')">⚙️ 시스템 설정</button>
         <button class="btn btn-ghost" onclick="adminLogout()" style="color:#EF9A9A; border-color:rgba(198,40,40,0.3)">로그아웃</button>
       </div>
     </div>
@@ -578,7 +580,13 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
 
   <!-- ══ 4. 설정 ══ -->
   <div class="screen" id="screen-setting">
-    <div class="shead"><div class="stitle">설정</div></div>
+    <div class="shead">
+      <div class="stitle">⚙️ 시스템 설정</div>
+      <div class="sdesc" style="color:#EF9A9A">관리자 전용 화면입니다.</div>
+    </div>
+    <div style="margin:0 16px 12px">
+      <button class="btn btn-ghost" onclick="showTab('admin')" style="color:var(--muted)">← 관리자 화면으로 돌아가기</button>
+    </div>
 
     <div class="card">
       <div class="clabel">🔗 Google Sheets 연동</div>
@@ -668,7 +676,6 @@ html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: 
   <button class="nbtn active" onclick="showTab('member')" id="nav-member"><div class="ni">👤</div>내 정보</button>
   <button class="nbtn" onclick="showTab('checkin')" id="nav-checkin"><div class="ni">✊</div>체크인</button>
   <button class="nbtn" onclick="showTab('admin')" id="nav-admin"><div class="ni">🛡</div>관리자</button>
-  <button class="nbtn" onclick="showTab('setting')" id="nav-setting"><div class="ni">⚙️</div>설정</button>
 </nav>
 
 <script>
@@ -866,7 +873,8 @@ window.addEventListener('load', () => {
 function showTab(tab) {
   ['member','checkin','admin','setting'].forEach(t => {
     document.getElementById('screen-'+t).classList.toggle('active', t===tab);
-    document.getElementById('nav-'+t).classList.toggle('active', t===tab);
+    const nav = document.getElementById('nav-'+t);
+    if (nav) nav.classList.toggle('active', t===tab);
   });
   if (tab==='checkin') initCheckin();
 }
